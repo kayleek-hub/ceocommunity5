@@ -21,21 +21,34 @@
     background:var(--bg);
     color:var(--ink);
     line-height:1.65;
+    /* 한글은 낱말 중간에서 끊지 않는다(영어 기준 기본값은 아무 글자에서나 끊는다).
+       대신 긴 주소처럼 한 낱말이 화면보다 넓을 때는 깨서 넘침을 막는다. */
+    word-break:keep-all;
+    overflow-wrap:break-word;
   }
+  /* 줄바꿈 다듬기 — 제목은 줄 길이를 고르게, 본문은 마지막 줄에 한 낱말만
+     남는(고아 낱말) 모양을 피한다. 지원하지 않는 브라우저는 그냥 무시한다. */
+  h1,h2,h3,.gen-sec-t,.category h2{ text-wrap:balance; }
+  p,li,.gen-lead,.gen-read,.gen-extra,.gen-meta-v,.chat-bubble .q-text,.qa summary{ text-wrap:pretty; }
+  /* 문장(절) 경계에서 확실히 줄을 나누고 싶을 때 쓰는 줄바꿈.
+     화면 폭에 따라 끊기는 위치가 제멋대로 정해지는 걸 막는다. */
+  .br-clause{ display:inline; }
+  /* 상단 히어로 — 피그마 최종 키비주얼(3안)의 핑크 그라데이션(#FFEBF5 → #FFCBE6)을
+     화면 전체 폭으로 깔고, 그 위에서 글과 키비주얼을 좌우로 나눠 넓게 쓴다.
+     (이전에는 560px 폭 안에 이미지·글이 한 줄로 몰려 있어 가운데만 빽빽했다.) */
   .hero{
-    background:linear-gradient(180deg,#FFEEF7 0%,#FFE3F1 42%,#FFD3E9 74%,#FFC7E4 100%);
-    padding:34px 20px 66px;
-    text-align:center;
+    background:linear-gradient(180deg,#FFEBF5 0%,#FFE1F0 38%,#FFD4E9 72%,#FFCBE6 100%);
+    padding:0;
     position:relative;
     overflow:hidden;
   }
-  /* 배경에 은은한 광원 2개 — 이미지 주변을 부드럽게 감싸준다 */
+  /* 배경 광원 — 오른쪽 키비주얼 뒤를 부드럽게 밝혀준다 */
   .hero::before{
     content:"";
     position:absolute;
-    top:-120px; left:50%; transform:translateX(-50%);
-    width:760px; height:520px;
-    background:radial-gradient(ellipse at center, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 68%);
+    top:-160px; right:-80px;
+    width:820px; height:620px;
+    background:radial-gradient(ellipse at center, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 66%);
     pointer-events:none;
   }
   .hero::after{
@@ -45,13 +58,22 @@
     background:var(--bg);
     border-radius:50% 50% 0 0 / 40px 40px 0 0;
   }
-  /* 키비주얼: 네모난 카드 테두리·그림자를 없애고 가장자리를 부드럽게 흐려
-     배경 핑크와 자연스럽게 이어지도록 처리 */
-  .hero .kv-wrap{
-    max-width:560px;
-    margin:0 auto -46px;
+  .hero-inner{
     position:relative;
     z-index:1;
+    max-width:1180px;
+    margin:0 auto;
+    padding:60px 40px 78px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);
+    align-items:center;
+    gap:40px;
+  }
+  .hero-copy{max-width:520px;}
+  /* 키비주얼: 카드 테두리·그림자 없이 가장자리를 흐려 배경 핑크와 이어지게 한다 */
+  .hero .kv-wrap{
+    position:relative;
+    margin:0;
   }
   .hero .kv-wrap img{
     display:block;
@@ -59,52 +81,59 @@
     height:auto;
     -webkit-mask-image:
       linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%),
-      linear-gradient(to bottom, transparent 0%, #000 6%, #000 95%, transparent 100%);
+      linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
     -webkit-mask-composite:source-in;
     mask-image:
       linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%),
-      linear-gradient(to bottom, transparent 0%, #000 6%, #000 95%, transparent 100%);
+      linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
     mask-composite:intersect;
   }
-  /* 이미지 아래쪽 색을 그대로 이어받아 배경으로 녹여주는 띠 (하단 잘린 단면을 감춘다) */
-  .hero .kv-fade{
-    display:block;
-    height:100px;
-    margin-top:-1px;
-    background:linear-gradient(180deg,#FFCBE6 0%, rgba(255,203,230,.55) 45%, rgba(255,203,230,0) 100%);
-    -webkit-mask-image:linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
-    mask-image:linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
-    pointer-events:none;
-  }
   .hero .eyebrow{
-    font-size:15px;
-    font-weight:700;
-    letter-spacing:.06em;
-    color:#FF5080;
-    margin-bottom:10px;
+    display:inline-block;
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:.14em;
+    color:#E8336E;
+    background:rgba(255,255,255,.62);
+    border-radius:999px;
+    padding:6px 14px;
+    margin-bottom:16px;
   }
   .hero h1{
-    font-size:32px;
-    margin:0 0 14px;
+    font-size:44px;
+    line-height:1.25;
+    margin:0 0 16px;
     font-weight:800;
     color:#32293A;
+    letter-spacing:-.01em;
   }
   .hero p{
-    font-size:16px;
+    font-size:17px;
     color:#6b5a68;
     margin:0;
-    max-width:560px;
-    margin-inline:auto;
+  }
+  /* 좁은 화면에서는 좌우 배치를 위아래로 되돌린다 (글 먼저, 키비주얼 아래) */
+  @media(max-width:880px){
+    .hero-inner{
+      grid-template-columns:1fr;
+      padding:34px 22px 60px;
+      gap:20px;
+      text-align:center;
+    }
+    .hero-copy{max-width:600px;margin-inline:auto;}
+    .hero h1{font-size:34px;}
+    .hero .kv-wrap{max-width:520px;margin-inline:auto;}
+    .hero::before{right:50%;transform:translateX(50%);}
   }
   .wrap{
-    max-width:900px;
+    max-width:1040px;
     margin:0 auto;
-    padding:0 28px 100px;
+    padding:0 32px 100px;
   }
   .searchbox{
     margin:-30px auto 28px;
     position:relative;
-    max-width:680px;
+    max-width:760px;
   }
   .searchbox input{
     width:100%;
@@ -139,15 +168,37 @@
     max-width:900px;
     margin:0 auto 30px;
   }
+  /* 안내문은 '무엇인지'와 '어떻게 쓰는지'를 따로 둔다.
+     한 문장으로 길게 쓰면 좁은 화면에서 두 줄로 어색하게 끊겼다 */
   .suggest-label{
     font-size:13px;
     font-weight:700;
     color:var(--sub);
     margin-bottom:12px;
     display:flex;
-    align-items:center;
-    gap:6px;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:2px 8px;
   }
+  .suggest-hint{
+    font-weight:600;
+    color:#a49b8c;
+  }
+  /* 모바일에서만 쓰는 '질문 더 보기' 버튼 */
+  .suggest-more{
+    display:none;
+    width:100%;
+    margin-top:10px;
+    padding:11px 14px;
+    background:#fffdf0;
+    border:1px dashed #e4dcc0;
+    border-radius:11px;
+    font-size:13.5px;
+    font-weight:700;
+    color:#8a7a45;
+    cursor:pointer;
+  }
+  .suggest-more:active{transform:scale(.99);}
   .chat-list{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -531,13 +582,28 @@
     color:#4a4a4a;
   }
   .gen-extra b{color:var(--accent);}
+  /* 근거 FAQ — 기본은 한 줄로 접혀 있고, 눌러서 펼칠 때만 칩이 보인다 */
   .gen-source{
-    margin-top:18px;
-    padding-top:14px;
+    margin-top:16px;
+    padding-top:13px;
     border-top:1px dashed var(--line);
     font-size:12.5px;
     color:var(--sub);
   }
+  .gen-source > summary{
+    cursor:pointer;
+    list-style:none;
+    font-weight:700;
+    color:var(--sub);
+    padding:2px 0;
+  }
+  .gen-source > summary::-webkit-details-marker{display:none;}
+  .gen-source > summary::after{
+    content:" ▾";
+    font-size:11px;
+  }
+  .gen-source[open] > summary::after{content:" ▴";}
+  .gen-source > summary:hover{color:var(--ink);}
   .gen-source-chips{
     display:flex;
     flex-wrap:wrap;
@@ -555,20 +621,40 @@
     cursor:pointer;
   }
   .gen-source-chips button:hover{border-color:var(--yellow);}
+  /* 참고 자료 — 버튼(말풍선)이 아니라 작은 글씨 링크 한 줄로 둔다.
+     '바로 할 일' 버튼과 위계를 분명히 나눠 화면이 조용해지도록. */
   .gen-more{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:6px 14px;
     margin-top:14px;
-    padding-top:14px;
+    padding-top:13px;
     border-top:1px dashed var(--line);
-    font-size:12.5px;
+    font-size:13px;
     color:var(--sub);
   }
-  .gen-more .go-btns{margin-top:9px;}
+  .gen-more-label{
+    font-size:12px;
+    font-weight:700;
+    color:#a49b8c;
+    letter-spacing:.02em;
+  }
+  .gen-link{
+    color:#6b6355;
+    font-weight:600;
+    text-decoration:none;
+    border-bottom:1px solid #ded7c8;
+    padding-bottom:1px;
+  }
+  .gen-link:hover{color:var(--ink);border-bottom-color:var(--yellow);}
   /* ---- 자료에 없는 질문 → 실제 웹 검색으로 연결 ---- */
   .web-fallback{ margin-top:18px; padding:16px 18px; background:#F5F8FF; border:1px solid #DCE6FA; border-radius:14px; }
   .web-fallback.soft{ margin-top:16px; background:#FAFAFA; border-color:var(--line); }
   .web-fallback-label{ font-size:13.5px; font-weight:700; color:#4a5568; margin-bottom:11px; }
   .web-fallback.soft .web-fallback-label{ font-weight:600; color:var(--sub); }
   .web-fallback .go-btns{ margin-top:0; }
+  .web-fallback .gen-more{ margin-top:0; padding-top:0; border-top:none; }
 
   .gen-fade{animation:genFade .45s ease both;}
   @keyframes genFade{
@@ -600,8 +686,19 @@
     text-align:center;
     font-size:13px;
     color:#b0aa8f;
-    padding:26px 0 10px;
+    padding:30px 0 10px;
   }
+  .foot-title{font-weight:700;letter-spacing:.02em;}
+  /* 링크는 구분용 중간점 없이 간격으로만 나눈다 */
+  .foot-links{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px 20px;
+    margin-top:10px;
+  }
+  .foot-links a{color:inherit;text-decoration:none;border-bottom:1px solid #ddd8c4;padding-bottom:1px;}
+  .foot-links a:hover{color:#8a8470;border-bottom-color:var(--yellow);}
   .cs-float{
     position:fixed;
     right:18px;
@@ -620,13 +717,10 @@
     box-shadow:0 10px 26px rgba(0,0,0,.22);
   }
   .cs-float:active{transform:scale(.97);}
+  /* 히어로·추천질문·본문 폭은 파일 맨 아래 '모바일 최적화' 블록에서 한 번에 다룬다.
+     여기에는 그 블록과 겹치지 않는 항목만 남긴다. */
   @media(max-width:480px){
     .cs-float{right:12px;bottom:12px;padding:11px 15px;font-size:12px;}
-    .hero h1{font-size:26px;}
-    .hero{padding:20px 20px 56px;}
-    .hero .kv-wrap{margin-bottom:-30px;}
-    .hero .kv-fade{height:64px;}
-    .chat-bubble{font-size:13.5px;padding:11px 15px;}
     .gen-meta-row{flex-direction:column;gap:2px;}
     .gen-steps > li{padding-left:28px;}
     .gen-read{font-size:12.5px;padding:8px 11px;}
@@ -661,6 +755,101 @@
     font-size:12.5px;
     margin-top:9px;
   }
+
+  /* ===================== 모바일 최적화 (2026-09-28) =====================
+     실제 휴대폰(약 412px) 화면에서 확인된 문제를 한 곳에 모아 고친다.
+     이 블록은 스타일시트 맨 끝에 두어 위쪽 규칙을 확실히 덮어쓴다.
+     고친 것:
+       1) 본문 좌우 여백 32px → 16px : 좁은 화면에서 글자 폭을 32px 더 확보
+       2) 히어로 : 키비주얼을 위로 올리고 크기를 줄여 첫 화면에 검색창까지 들어오게
+       3) 키비주얼 안에 이미 '사장님커뮤니티 5기'가 크게 적혀 있어 눈썹 배지는 숨김
+       4) 한글이 낱말 중간에서 끊기지 않도록 word-break:keep-all
+       5) 추천 질문 13개가 한 줄씩 쌓여 화면을 다 먹던 문제 → 6개만 보여주고 펼침
+       6) 긴 버튼 라벨이 화면 밖으로 넘던 문제 → 줄바꿈 허용 + 한 줄 전체 폭
+     ===================================================================== */
+  @media(max-width:600px){
+    .wrap{ padding:0 16px 96px; }
+
+    .hero-inner{
+      grid-template-columns:1fr;
+      padding:18px 18px 44px;
+      gap:12px;
+      text-align:center;
+    }
+    .hero .kv-wrap{ order:-1; max-width:330px; margin-inline:auto; }
+    .hero .eyebrow{ display:none; }
+    .hero-copy{ max-width:none; }
+    .hero h1{ font-size:26px; margin:0 0 9px; word-break:keep-all; }
+    .hero p{ font-size:14.5px; line-height:1.6; word-break:keep-all; }
+    .hero::after{ height:56px; bottom:-28px; border-radius:50% 50% 0 0 / 28px 28px 0 0; }
+
+    .searchbox{ margin:-22px auto 22px; }
+    .searchbox input{ padding:15px 16px 15px 44px; font-size:16px; border-radius:14px; }
+    .searchbox .search-icon{ left:16px; font-size:16px; }
+    .search-result-count{ font-size:13px; margin-bottom:14px; }
+
+    .suggest-wrap{ margin-bottom:24px; }
+    .suggest-hint{ display:none; }
+    .chat-list{ gap:8px; }
+    .chat-list.collapsed > .chat-bubble:nth-child(n+7){ display:none; }
+    .chat-bubble{ padding:12px 13px; font-size:14px; border-radius:11px; word-break:keep-all; }
+    .chat-bubble .q-text{ line-height:1.5; }
+    .suggest-more{ display:block; }
+
+    /* 탭은 화면 끝까지 흘러가게 해서 '옆으로 넘길 수 있다'는 게 보이도록 */
+    .nav-tabs{
+      margin:0 -16px 24px;
+      padding:10px 16px 6px;
+      gap:6px;
+    }
+    .nav-tabs button{ padding:9px 14px; font-size:13.5px; }
+
+    .category{ margin-bottom:32px; }
+    .category h2{ font-size:18px; gap:7px; word-break:keep-all; }
+    .category .badge{ width:25px;height:25px;font-size:14px; }
+    .category .desc{ font-size:13.5px; margin-bottom:14px; }
+
+    .qa{ border-radius:12px; margin-bottom:10px; }
+    .qa summary{ padding:15px 16px; font-size:15.5px; gap:9px; line-height:1.55; word-break:keep-all; }
+    .qa .a{ padding:0 16px 17px; font-size:15px; }
+    .qa .a ul{ padding-left:17px; }
+
+    .smart-answer{ margin-bottom:24px; }
+    .gen-answer{ padding:18px 16px 16px; border-radius:14px; }
+    .gen-lead{ font-size:15.5px; line-height:1.7; margin-bottom:13px; }
+    .gen-points > li, .gen-steps > li{ font-size:14.5px; }
+    .gen-sub li{ font-size:14px; }
+    .gen-meta{ padding:12px 14px; }
+    .gen-meta-row{ font-size:14px; }
+    .gen-extra{ padding:12px 14px; font-size:14px; }
+    .gen-more{ gap:8px 12px; font-size:13.5px; }
+    .smart-related-list .qa summary{ padding:14px 16px; }
+
+    /* '카카오비즈니스 파트너센터에서 입점하기'처럼 긴 라벨이 잘리던 문제 */
+    .go-btns{ gap:8px; }
+    .go-btn{
+      white-space:normal;
+      justify-content:center;
+      text-align:center;
+      flex:1 1 100%;
+      padding:12px 14px;
+      font-size:14px;
+      line-height:1.45;
+      word-break:keep-all;
+    }
+    .web-fallback{ padding:14px 15px; }
+
+    .cta-box{ margin-top:34px; padding:24px 18px; border-radius:16px; }
+    .cta-box a{ display:block; }
+    footer{ padding:24px 0 8px; }
+    .foot-links{ gap:6px 16px; }
+  }
+  @media(max-width:400px){
+    .hero h1{ font-size:24px; }
+    .hero .kv-wrap{ max-width:288px; }
+    .qa summary{ font-size:15px; }
+    .chat-bubble{ font-size:13.5px; }
+  }
 </style>
 </head>
 <body>
@@ -668,13 +857,18 @@
 <a class="cs-float" href="https://cs.kakao.com/helps?service=247&amp;locale=ko" target="_blank">💬 고객센터</a>
 
 <div class="hero">
-  <div class="kv-wrap">
-    <img src="assets/hero-beauty-gift.png" alt="열린 선물 상자와 립스틱, 네일, 빗, 파우더 등 뷰티 소품이 떠 있는 사장님 커뮤니티 5기 뷰티 키비주얼">
-    <span class="kv-fade" aria-hidden="true"></span>
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <div class="eyebrow">사장님커뮤니티 5기</div>
+      <h1>자주 묻는 질문</h1>
+      <!-- 줄바꿈 : 쉼표 뒤에서 끊기도록 문장을 나누고, 끊기면 어색한 구절은
+           줄바꿈 없는 공백(&nbsp;)으로 묶어 둔다. '5기 / 참여에' 처럼 갈리지 않게. -->
+      <p>필수&nbsp;채널 가입부터 사전준비, 발대식, 온라인&nbsp;커리큘럼, 예약하기&nbsp;입점까지,<br class="br-clause">5기&nbsp;참여에 필요한 내용을 모았습니다.</p>
+    </div>
+    <div class="kv-wrap">
+      <img src="assets/hero-beauty-gift.png" alt="열린 선물 상자와 립스틱, 네일, 빗, 파우더 등 뷰티 소품이 떠 있는 사장님 커뮤니티 5기 뷰티 키비주얼">
+    </div>
   </div>
-  <div class="eyebrow">KAKAO BUSINESS · 사장님커뮤니티 5기</div>
-  <h1>자주 묻는 질문</h1>
-  <p>필수 채널 가입부터 사전준비, 발대식, 온라인 커리큘럼, 예약하기 입점까지<br>사장님커뮤니티 5기 참여에 필요한 내용을 모았습니다.</p>
 </div>
 
 <div class="wrap">
@@ -696,13 +890,13 @@
   </div>
 
   <div class="suggest-wrap" id="suggestWrap">
-    <div class="suggest-label">💬 4기 참가자들이 자주 물어봤던 질문 · 누르면 답변으로 바로 이동해요</div>
-    <div class="chat-list">
+    <div class="suggest-label"><span>💬 4기 참가자들이 자주 물어봤던 질문</span><span class="suggest-hint">누르면 답변으로 바로 이동해요</span></div>
+    <div class="chat-list collapsed" id="chatList">
       <button type="button" class="chat-bubble" data-target="faq-bizauth"><span class="emoji">🙋</span><span class="q-text">비즈인증은 어떻게 하나요?</span><span class="arrow">→</span></button>
       <button type="button" class="chat-bubble" data-target="faq-bizauth-docs"><span class="emoji">🙋</span><span class="q-text">심사 서류는 뭐가 필요한가요?</span><span class="arrow">→</span></button>
       <button type="button" class="chat-bubble" data-target="faq-preready-checklist"><span class="emoji">🙋</span><span class="q-text">사전준비는 무엇을 해야 하나요?</span><span class="arrow">→</span></button>
       <button type="button" class="chat-bubble" data-target="faq-booking"><span class="emoji">🙋</span><span class="q-text">예약하기 입점은 어떻게 하나요?</span><span class="arrow">→</span></button>
-      <button type="button" class="chat-bubble" data-target="faq-hairshop-direct"><span class="emoji">🙋</span><span class="q-text">헤어샵도 직접 입점할 수 있나요?</span><span class="arrow">→</span></button>
+      <button type="button" class="chat-bubble" data-target="faq-hairshop-direct"><span class="emoji">🙋</span><span class="q-text">헤어샵은 예약하기에 어떻게 입점하나요?</span><span class="arrow">→</span></button>
       <button type="button" class="chat-bubble" data-target="faq-kanana"><span class="emoji">🙋</span><span class="q-text">카나나 상담매니저가 뭔가요?</span><span class="arrow">→</span></button>
       <button type="button" class="chat-bubble" data-target="faq-mapad"><span class="emoji">🙋</span><span class="q-text">맵광고는 어떻게 신청하나요?</span><span class="arrow">→</span></button>
       <button type="button" class="chat-bubble" data-target="faq-event-info"><span class="emoji">🙋</span><span class="q-text">발대식은 언제, 어디서 하나요?</span><span class="arrow">→</span></button>
@@ -712,6 +906,7 @@
       <button type="button" class="chat-bubble" data-target="faq-cafe-reject"><span class="emoji">🙋</span><span class="q-text">다음카페 가입이 계속 거절돼요</span><span class="arrow">→</span></button>
       <button type="button" class="chat-bubble" data-target="faq-contact"><span class="emoji">🙋</span><span class="q-text">궁금한 점은 어디에 문의하나요?</span><span class="arrow">→</span></button>
     </div>
+    <button type="button" class="suggest-more" id="suggestMore" aria-expanded="false" aria-controls="chatList"></button>
   </div>
 
   <div class="nav-tabs" id="navTabs">
@@ -752,7 +947,11 @@
             <li><b>5회차 · 온라인</b> 10/27(화) 14:00~15:30</li>
             <li><b>6회차 · 오프라인 수료식</b> 11/3(화) 10:00~14:00</li>
           </ul>
-          <p>회차별 상세 커리큘럼과 참여 링크는 별도 공지 및 커리큘럼 페이지에서 안내드립니다.</p>
+          <p>온라인 회차(2~5회차)는 카카오비즈니스 세미나 페이지에서 진행됩니다. 회차별 상세 커리큘럼은 커리큘럼 페이지에서 확인하실 수 있습니다.</p>
+          <div class="go-btns">
+            <a class="go-btn" href="https://bizseminar.kakao.com/seminar/329" target="_blank" rel="noopener">🎥 5기 온라인 LIVE 교육 페이지 가기</a>
+            <a class="go-btn outline" href="curriculum.html">📚 커리큘럼 상세 페이지 보기</a>
+          </div>
         </div>
       </details>
 
@@ -903,6 +1102,7 @@
           <p class="note">※ 운영 관리는 <b>모바일 앱</b>으로도 편리하게 하실 수 있습니다. 플레이스토어·앱스토어에서 <b>‘카카오비즈니스 파트너센터’</b>를 검색해 미리 설치·로그인해두세요.</p>
           <div class="go-btns">
             <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 카카오비즈니스에서 신청하기</a>
+            <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 사전 설정 튜토리얼 영상으로 따라하기</a>
           </div>
         </div>
       </details>
@@ -940,6 +1140,7 @@
           </ul>
           <div class="go-btns">
             <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 파트너센터에서 심사 현황 확인하기</a>
+            <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 심사 신청 과정 영상으로 확인하기</a>
           </div>
         </div>
       </details>
@@ -964,6 +1165,7 @@
           <div class="go-btns">
             <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 파트너센터에서 사유 확인 후 재심사</a>
             <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank">☕ 다음카페에 반려 사유 문의하기</a>
+            <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 서류 제출 화면 영상으로 다시 보기</a>
           </div>
         </div>
       </details>
@@ -985,6 +1187,7 @@
           <div class="go-btns">
             <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 파트너센터에서 매장정보 수정하기</a>
             <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank">☕ 다음카페에 매장 심사 문의하기</a>
+            <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 매장 등록 화면 영상으로 다시 보기</a>
           </div>
         </div>
       </details>
@@ -1027,6 +1230,7 @@
           <p class="note">※ 채널의 비즈월렛 생성·연결은 <b>채널 마스터만</b> 가능합니다. 비즈월렛을 삭제하면 남아 있던 무상캐시는 함께 소멸되고 환불되지 않습니다.</p>
           <div class="go-btns">
             <a class="go-btn" href="https://business.kakao.com" target="_blank">💳 파트너센터에서 비즈월렛 연결하기</a>
+            <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 비즈월렛 생성·연결 영상으로 따라하기</a>
           </div>
         </div>
       </details>
@@ -1051,6 +1255,7 @@
           <div class="go-btns">
             <a class="go-btn" href="https://bizseminar.kakao.com/support" target="_blank">🎁 웰컴프로그램 신청하기</a>
             <a class="go-btn outline" href="https://kko.to/F5ffMufaqa" target="_blank" rel="noopener">📄 웰컴프로그램 신청 가이드</a>
+            <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 신청 과정 영상으로 따라하기</a>
             <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5/Md20/10" target="_blank" rel="noopener">☕ 다음카페 공지 원문 보기</a>
           </div>
         </div>
@@ -1259,6 +1464,10 @@
         <summary><span><span class="q-mark">Q.</span>온라인 회차는 어떤 방식으로 진행되나요?</span><span class="chev">▾</span></summary>
         <div class="a">
           <p>기본적인 기능 설정 방법은 VOD(사전 제작 영상)로 미리 학습하실 수 있고, 실시간 LIVE 세션에서는 업종별 활용 사례, AI 활용법, 서비스 담당자와의 실무 Q&amp;A를 중심으로 진행됩니다. 궁금한 점을 실시간으로 바로 질문하실 수 있습니다.</p>
+          <p>온라인 LIVE 교육은 <b>카카오비즈니스 세미나 페이지</b>에서 진행됩니다. 아래 버튼으로 5기 세미나 페이지에 들어가시면 회차별 교육을 수강하실 수 있습니다.</p>
+          <div class="go-btns">
+            <a class="go-btn" href="https://bizseminar.kakao.com/seminar/329" target="_blank" rel="noopener">🎥 5기 온라인 LIVE 교육 페이지 가기</a>
+          </div>
         </div>
       </details>
 
@@ -1272,6 +1481,7 @@
             <li>5회차(10/27) : 맵광고 · 우리채널알리기 · 우리매장알리기</li>
           </ul>
           <div class="go-btns">
+            <a class="go-btn" href="https://bizseminar.kakao.com/seminar/329" target="_blank" rel="noopener">🎥 5기 온라인 LIVE 교육 페이지 가기</a>
             <a class="go-btn" href="https://business.kakao.com" target="_blank">📍 카카오비즈니스 파트너센터 바로가기</a>
             <a class="go-btn" href="https://business.kakao.com/info/mychannelad/" target="_blank">📣 우리채널알리기 안내 보기</a>
             <a class="go-btn" href="https://business.kakao.com/info/mystoread/" target="_blank">🏬 우리매장알리기 안내 보기</a>
@@ -1352,13 +1562,17 @@
         <summary><span><span class="q-mark">Q.</span>실시간 참여가 어려우면 어떻게 하나요?</span><span class="chev">▾</span></summary>
         <div class="a">
           <p>실시간 참여가 어려우신 경우 다시보기(VOD)로 학습하실 수 있도록 준비하고 있습니다. 다만 실무자에게 직접 질문할 수 있는 것은 실시간 세션만의 장점이니, 가능하시면 실시간 참여를 권장드립니다.</p>
+          <p>실시간 세션과 다시보기 모두 아래 5기 세미나 페이지에서 확인하실 수 있습니다.</p>
+          <div class="go-btns">
+            <a class="go-btn" href="https://bizseminar.kakao.com/seminar/329" target="_blank" rel="noopener">🎥 5기 온라인 LIVE 교육 페이지 가기</a>
+          </div>
         </div>
       </details>
     </section>
 
     <section class="category hidden" id="cat-setting">
       <h2><span class="badge">🛠️</span>채널·매장 세팅</h2>
-      <p class="desc">채널홈 꾸미기, 소식·쿠폰, 채팅방 세팅처럼 직접 손으로 해야 하는 실습 항목들입니다. (2주차 튜토리얼 범위)</p>
+      <p class="desc">채널홈&nbsp;꾸미기, 소식·쿠폰, 채팅방&nbsp;세팅처럼 직접 손으로 해야 하는 실습 항목들입니다. (2주차&nbsp;튜토리얼 범위)</p>
 
       <details class="qa" id="faq-channel-info">
         <summary><span><span class="q-mark">Q.</span>채널 정보에서 무엇을 확인해야 하나요?</span><span class="chev">▾</span></summary>
@@ -1535,20 +1749,20 @@
         <div class="a">
           <p>업종에 따라 입점 방식이 다릅니다.</p>
           <ul>
-            <li><b>헤어샵</b> : 파트너사 '글리티'의 예약관리 솔루션 '마메드네(마메드네 파트너스)'를 통해서만 입점이 가능합니다.</li>
-            <li><b>헤어샵 외 뷰티업종</b>(에스테틱, 피부관리, 네일, 속눈썹, 메이크업, 왁싱, 가발 등) : 예약하기에 직접 입점하실 수 있습니다.</li>
+            <li><b>헤어샵</b> : 파트너사 '글리티'의 예약관리 솔루션 '마메드네(마메드네 파트너스)'를 통해 예약하기에 입점하실 수 있습니다.</li>
+            <li><b>헤어샵 외 뷰티업종</b>(에스테틱, 피부관리, 네일, 속눈썹, 메이크업, 왁싱, 가발 등) : 카카오비즈니스 파트너센터에서 바로 입점하실 수 있습니다.</li>
           </ul>
           <div class="go-btns">
             <a class="go-btn" href="https://partners.mamedene.com/" target="_blank">💇 마메드네 파트너스에서 입점하기(헤어샵)</a>
-            <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 카카오비즈니스 파트너센터에서 직접 입점하기(헤어샵 외)</a>
+            <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 카카오비즈니스 파트너센터에서 입점하기(헤어샵 외)</a>
           </div>
         </div>
       </details>
 
       <details class="qa" id="faq-hairshop-direct">
-        <summary><span><span class="q-mark">Q.</span>헤어샵인데 마메드네를 통하지 않고 직접 입점할 수 없나요?</span><span class="chev">▾</span></summary>
+        <summary><span><span class="q-mark">Q.</span>헤어샵은 예약하기에 어떻게 입점하나요?</span><span class="chev">▾</span></summary>
         <div class="a">
-          <p>현재 헤어샵 업종은 예약하기 직접 입점이 아닌 '글리티'의 마메드네(예약관리 솔루션)를 통한 입점만 가능합니다. 3회차(10/13) 세션에서 마메드네 입점 절차를 자세히 안내드릴 예정이니, 궁금하신 점은 그때 질문해주세요.</p>
+          <p>헤어샵은 파트너사 '글리티'의 예약관리 솔루션 <b>마메드네(마메드네 파트너스)</b>를 통해 카카오톡 예약하기에 입점하실 수 있습니다. 예약 관리에 특화된 솔루션이라 예약·고객 관리를 함께 쓰실 수 있습니다. 3회차(10/13) 세션에서 마메드네 입점 절차를 자세히 안내드릴 예정이니, 궁금하신 점은 그때 질문해주세요.</p>
         </div>
       </details>
 
@@ -1603,11 +1817,19 @@
 
   <div class="cta-box">
     <h3>이 페이지에서 궁금증이 풀리지 않으셨나요?</h3>
-    <p>커리큘럼 상세 페이지와 다음카페 Q&amp;A 게시판에서 더 자세한 내용을 확인하실 수 있습니다.</p>
+    <p>커리큘럼&nbsp;상세 페이지와 다음카페 Q&amp;A&nbsp;게시판에서<br class="br-clause">더 자세한 내용을 확인하실 수 있습니다.</p>
     <a href="curriculum.html">커리큘럼 페이지 보기</a>
   </div>
 
-  <footer>사장님커뮤니티 5기 · KAKAO BUSINESS · <a href="curriculum.html" style="color:inherit;text-decoration:underline;">전체 커리큘럼</a> · <a href="results4.html" style="color:inherit;text-decoration:underline;">4기 성과 보고서</a> · <a href="https://cafe.daum.net/kakaoceocommunity5" target="_blank" style="color:inherit;text-decoration:underline;">다음카페</a> · <a href="https://cs.kakao.com/helps?service=247&amp;locale=ko" target="_blank" style="color:inherit;text-decoration:underline;">카카오비즈니스 파트너센터 고객센터</a></footer>
+  <footer>
+    <div class="foot-title">사장님커뮤니티 5기 &nbsp;|&nbsp; KAKAO BUSINESS</div>
+    <div class="foot-links">
+      <a href="curriculum.html">전체 커리큘럼</a>
+      <a href="results4.html">4기 성과 보고서</a>
+      <a href="https://cafe.daum.net/kakaoceocommunity5" target="_blank" rel="noopener">다음카페</a>
+      <a href="https://cs.kakao.com/helps?service=247&amp;locale=ko" target="_blank" rel="noopener">파트너센터 고객센터</a>
+    </div>
+  </footer>
 
 </div>
 
@@ -1706,6 +1928,11 @@
   const WNOTICE = 'https://cafe.daum.net/kakaoceocommunity5/Md20/10';
   const WASK = 'https://cafe.daum.net/kakaoceocommunity5/Ml0H';
   const WFORM = 'https://forms.gle/6qLTvo8eAp6brWJp6';
+  // 0주차 사전 설정 튜토리얼 VOD (채널 생성·비즈인증 심사·매장 심사·비즈월렛·웰컴프로그램 신청 전 과정)
+  // 채널 인증/심사, 매장 심사, 웰컴프로그램 신청 문의에 함께 안내한다. 2주차 이후 실습 VOD 는 링크가 나오면 추가.
+  const VOD0 = 'https://bizseminar.kakao.com/vod/284?vodId=1007';
+  // 5기 회차별 온라인 LIVE 교육이 열리는 세미나 페이지
+  const LIVE = 'https://bizseminar.kakao.com/seminar/329';
 
   const KB = [
     {
@@ -1770,7 +1997,7 @@
         {keys:['왜','필요','이유','해야'],text:'필요한 이유 : 예약하기·맵광고·채널메시지 등 커리큘럼에서 다루는 기능을 이용하기 위한 필수 단계입니다.'},
         {keys:['안되','안 되','막혔','실패','어려','문제','거절'],text:'막히는 경우 : 반려되어도 사유 확인 후 재심사가 가능하고, 발대식 현장 CS테이블이나 다음카페 Q&A 게시판으로 문의하시면 담당자가 도와드립니다.'}
       ],
-      links:[{t:'🏪 카카오비즈니스에서 신청하기',h:BIZ}],
+      links:[{t:'🏪 카카오비즈니스에서 신청하기',h:BIZ},{t:'▶️ 사전 설정 튜토리얼 영상 보기 (11분)',h:VOD0}],
       docs:[
         {t:'📘 비즈니스 채널 신청 가이드',h:GITBOOK+'/channel/start'},
         {t:'📘 채널관리·비즈니스 채널 전환 가이드',h:GITBOOK+'/channel/run/mychannel'}
@@ -1798,7 +2025,7 @@
         {keys:['순서','먼저','뭐부터','우선'],text:'권장 순서 : 비즈니스 채널 심사 신청 → 매장 등록·연결 → 비즈월렛 생성·연결 → 웰컴프로그램 신청. 웰컴프로그램은 비즈월렛에 채널(서비스자산)이 1개 이상 연결돼 있어야 신청 화면에 월렛이 뜨기 때문에 이 순서를 지켜주시는 게 좋습니다.'},
         {keys:['튜토리얼','영상','vod','동영상','보면서','따라','강의'],text:'영상 안내 : 사전 설정 과정은 「사전 튜토리얼 영상」(1강 · 총 11분)으로도 보실 수 있습니다. 카카오 비즈 세미나 사이트의 VOD 교육 페이지에 올라와 있고, 로그인하지 않으면 1분 미리보기만 재생되니 로그인 후 시청해주세요.'}
       ],
-      links:[{t:'▶️ 사전 튜토리얼 영상 보기 (11분)',h:'https://bizseminar.kakao.com/vod/284?vodId=1007'},{t:'🏪 카카오비즈니스에서 사전준비 시작하기',h:BIZ},{t:'🎁 웰컴프로그램 신청하기',h:WELCOME}],
+      links:[{t:'▶️ 사전 설정 튜토리얼 영상 보기 (11분)',h:VOD0},{t:'🏪 카카오비즈니스에서 사전준비 시작하기',h:BIZ},{t:'🎁 웰컴프로그램 신청하기',h:WELCOME}],
       docs:[
         {t:'📘 비즈니스 채널 신청 가이드',h:GITBOOK+'/channel/start'},
         {t:'📘 웰컴 프로그램 공식 안내',h:GITBOOK+'/partner/boost/support'}
@@ -1838,7 +2065,7 @@
         {keys:['사라','없어','자동','삭제','미사용','1년'],text:'비즈월렛을 만든 뒤 1년간 사용 이력이 없으면 자동으로 삭제될 수 있습니다. 미리 만들어두셨다면 광고 실습 전에 살아 있는지 확인해주세요.'},
         {keys:['연결 해제','변경','자산','관리','확인','무상잔액','잔액'],text:'연결이 끝나면 캐시 관리에서 유상·무상 캐시 현황을 볼 수 있고, 지원받은 광고비는 ‘무상잔액’에서 확인합니다. 연결 자산 관리에서는 연결 해제·변경이 가능합니다.'}
       ],
-      links:[{t:'💳 파트너센터에서 비즈월렛 연결하기',h:BIZ}],
+      links:[{t:'💳 파트너센터에서 비즈월렛 연결하기',h:BIZ},{t:'▶️ 사전 설정 튜토리얼 영상 보기 (11분)',h:VOD0}],
       docs:[
         {t:'📘 비즈월렛 생성 가이드',h:GITBOOK+'/tool/bizwallet/create'},
         {t:'📘 캐시 관리·무상캐시 사용하기 가이드',h:GITBOOK+'/tool/bizwallet/payment/cash'}
@@ -1889,9 +2116,10 @@
       ],
       facts:[
         {keys:['못','어려','불참','놓치','다시보기','vod','대체','결석'],text:'실시간 참여가 어려우시면 다시보기(VOD)로 학습하실 수 있습니다. 다만 실무자에게 직접 질문할 수 있는 것은 실시간 세션만의 장점이라 가능하면 실시간 참여를 권장드립니다.'},
-        {keys:['어떻게','방식','진행','어디서'],text:'진행 방식 : 기본 기능 설정은 사전 제작 VOD로, LIVE에서는 업종별 사례·AI 활용법·서비스 담당자와의 실무 Q&A 중심으로 진행됩니다.'}
+        {keys:['어떻게','방식','진행','어디서'],text:'진행 방식 : 기본 기능 설정은 사전 제작 VOD로, LIVE에서는 업종별 사례·AI 활용법·서비스 담당자와의 실무 Q&A 중심으로 진행됩니다.'},
+        {keys:['어디서','링크','입장','접속','주소','들어','수강','신청'],text:'수강 위치 : 회차별 온라인 LIVE 교육은 카카오비즈니스 세미나 페이지(5기 전용)에서 진행됩니다.'}
       ],
-      links:[{t:'📚 커리큘럼 상세 페이지 보기',h:'curriculum.html'}],
+      links:[{t:'🎥 5기 온라인 LIVE 교육 페이지 가기',h:LIVE},{t:'📚 커리큘럼 상세 페이지 보기',h:'curriculum.html'}],
       docs:[
         {t:'📘 채널 운영하기 가이드(채널홈·소식·쿠폰·메시지)',h:GITBOOK+'/channel/run'}
       ],
@@ -1903,20 +2131,20 @@
       goal:'내 업종에 맞는 예약하기 입점 경로 파악',
       ordered:false,
       keys:['예약하기','입점','마메드네','글리티','헤어샵','에스테틱','네일','속눈썹','왁싱','피부관리','메이크업','가발','예약'],
-      lead:'예약하기 입점 방식은 업종에 따라 다릅니다. 헤어샵은 파트너사 글리티의 예약관리 솔루션 마메드네를 통해서만 입점이 가능하고, 그 외 뷰티업종은 카카오비즈니스 파트너센터에서 직접 입점하실 수 있습니다.',
+      lead:'예약하기 입점 경로는 업종에 따라 다릅니다. 헤어샵은 파트너사 글리티의 예약관리 솔루션 마메드네를 통해 입점하실 수 있고, 그 외 뷰티업종은 카카오비즈니스 파트너센터에서 바로 입점하실 수 있습니다.',
       core:[
-        '헤어샵 : 마메드네(마메드네 파트너스)를 통한 입점만 가능',
-        '헤어샵 외(에스테틱·피부관리·네일·속눈썹·메이크업·왁싱·가발 등) : 파트너센터에서 직접 입점 가능'
+        '헤어샵 : 마메드네(마메드네 파트너스)를 통해 예약하기에 입점',
+        '헤어샵 외(에스테틱·피부관리·네일·속눈썹·메이크업·왁싱·가발 등) : 파트너센터에서 바로 입점'
       ],
       facts:[
-        {keys:['직접','왜','안되','안 되','못','따로'],text:'헤어샵 업종은 현재 예약하기 직접 입점이 지원되지 않아 마메드네를 통해야 합니다.'},
+        {keys:['직접','왜','안되','안 되','못','따로','경로','어떻게'],text:'헤어샵 입점 경로 : 헤어샵은 예약관리 솔루션 마메드네(마메드네 파트너스)를 통해 카카오톡 예약하기에 입점하실 수 있습니다. 예약·고객 관리 기능을 함께 쓰실 수 있어 편리합니다.'},
         {keys:['언제','안내','교육','배우','설명','어떻게'],text:'3회차(10/13) 세션에서 예약하기(비헤어샵/헤어샵) 입점 절차와 설정 방법을 자세히 안내드립니다.'},
         {keys:['조건','자격','필요','채널','비즈인증','권한'],text:'입점 조건 : 국세청에 등록된 개인·법인 사업자여야 하고(휴업·폐업 불가), 공개·정상 상태의 비즈니스 인증 채널에 마스터 권한이 있어야 합니다. 입점이 완료된 뒤에는 연결 채널을 바꿀 수 없어 재입점이 필요하니 처음에 채널을 잘 확인해주세요.'},
         {keys:['심사','며칠','얼마','기간','걸리'],text:'입점 심사는 영업일 기준 2~5일이 걸립니다. 입점할 때 자동 생성되는 최초 상품은 심사 없이 노출되고, 이후 새로 등록하는 상품은 3~5일의 심사를 거칩니다.'},
         {keys:['결제','선결제','정산','돈','입금','수수료','세금계산서'],text:'결제 연동은 필수가 아닙니다. ‘예약만 받기’로 운영하면 정산정보 없이도 시작할 수 있고, 예약금·선결제를 받으려면 통신판매업 신고와 정산정보·고객확인 정보 등록이 필요합니다. 정산은 이용완료 후 1영업일 기준으로 처리되고, 세금계산서는 카카오가 발행하므로 판매자가 따로 발행하지 않습니다.'},
-        {keys:['모바일','앱','핸드폰','pc'],text:'모바일에서는 숙소·티켓/레저·병원 업종의 입점이 지원되지 않고, 숙소는 공식 협력사를 통해서만 입점할 수 있습니다. 쿠폰 기능은 직접 입점한 파트너의 PC 화면에서만 제공됩니다.'}
+        {keys:['모바일','앱','핸드폰','pc'],text:'입점 경로 안내 : 숙소·티켓/레저·병원 업종은 PC 화면에서 진행해주시고, 숙소는 공식 협력사를 통해 입점하실 수 있습니다. 쿠폰 기능은 파트너센터에서 직접 입점한 경우 PC 화면에서 쓰실 수 있습니다.'}
       ],
-      links:[{t:'💇 마메드네 파트너스에서 입점하기(헤어샵)',h:'https://partners.mamedene.com/'},{t:'🏪 파트너센터에서 직접 입점하기(헤어샵 외)',h:'https://business.kakao.com/profiles'}],
+      links:[{t:'💇 마메드네 파트너스에서 입점하기(헤어샵)',h:'https://partners.mamedene.com/'},{t:'🏪 파트너센터에서 입점하기(헤어샵 외)',h:'https://business.kakao.com/profiles'}],
       docs:[
         {t:'📘 카카오톡 예약하기 가이드',h:GITBOOK+'/tool/booking'},
         {t:'📘 예약하기 파트너센터(PC) 가이드',h:GITBOOK+'/tool/booking/pc'}
@@ -2020,6 +2248,7 @@
       links:[
         {t:'🎁 웰컴프로그램 신청하기',h:WELCOME},
         {t:'📄 웰컴프로그램 신청 가이드',h:'https://kko.to/F5ffMufaqa'},
+        {t:'▶️ 사전 설정 튜토리얼 영상 보기 (11분)',h:VOD0},
         {t:'📝 별도 광고 캐시 신청 구글폼',h:WFORM},
         {t:'💳 비즈월렛에서 무상캐시 확인하기',h:'https://bizwallet.kakao.com/list?tab=active'},
         {t:'☕ 웰컴프로그램 관련 문의하기',h:WASK},
@@ -2102,7 +2331,7 @@
       facts:[
         {keys:['꼭','필수','참석','못','vod','다시보기','전부','모두','다'],text:'오프라인 행사(발대식·수료식)는 참석을 권장하되 필수는 아니며, 참석이 어려우시면 온라인 회차와 마찬가지로 다시보기(VOD)로 학습하실 수 있습니다.'}
       ],
-      links:[{t:'📚 커리큘럼 상세 페이지 보기',h:'curriculum.html'}],
+      links:[{t:'📚 커리큘럼 상세 페이지 보기',h:'curriculum.html'},{t:'🎥 5기 온라인 LIVE 교육 페이지 가기',h:LIVE}],
       refs:['faq-schedule','faq-program-general','faq-attendance-required']
     },
     {
@@ -2154,7 +2383,7 @@
         {keys:['광고','맵광고','중단','환급'],text:'매장 주소나 카테고리를 변경하면 진행 중인 맵광고가 자동으로 중단되고 남은 금액이 환급됩니다. 매장 정보를 먼저 정리한 뒤 광고를 시작해주세요.'},
         {keys:['사진','몇 장','30','10mb','용량'],text:'매장 사진은 장당 10MB 이하로 한 번에 최대 30장까지 올릴 수 있습니다. 사진 왼쪽 하단의 #을 눌러 카테고리 태그를 달면 카카오맵에서 카테고리별로 노출됩니다.'}
       ],
-      links:[{t:'🏪 파트너센터에서 매장 관리하기',h:BIZ}],
+      links:[{t:'🏪 파트너센터에서 매장 관리하기',h:BIZ},{t:'▶️ 사전 설정 튜토리얼 영상 보기 (11분)',h:VOD0}],
       docs:[{t:'📘 매장관리 공식 가이드',h:GITBOOK+'/channel/run/mystore'}],
       refs:['faq-store-info-edit','faq-store-phone-review','faq-mystore-manage','faq-mapad-cost']
     },
@@ -2446,7 +2675,7 @@
         {keys:['모르','애매','무엇','뭘','어떻게','도움','문의'],text:'사유 문구만으로 무엇을 고쳐야 할지 모르겠다면 사유 화면을 캡처해 다음카페 Q&A 게시판에 올려주세요. 담당자가 어디를 고쳐야 하는지 짚어드리고, 발대식 현장 CS테이블에서도 바로 도와드립니다. 사전준비 기간이 짧으니 두 번 이상 반려되셨다면 혼자 고치지 마시고 바로 문의해주세요.'},
         {keys:['폐업','휴업','사업자번호'],text:'폐업·휴업 상태의 사업자번호로는 심사가 진행되지 않습니다. 현재 운영 중인 사업자번호로 진행해주세요.'}
       ],
-      links:[{t:'🏪 파트너센터에서 사유 확인 후 재심사',h:BIZ},{t:'☕ 다음카페에 반려 사유 문의하기',h:CAFE}],
+      links:[{t:'🏪 파트너센터에서 사유 확인 후 재심사',h:BIZ},{t:'☕ 다음카페에 반려 사유 문의하기',h:CAFE},{t:'▶️ 사전 설정 튜토리얼 영상 보기 (11분)',h:VOD0}],
       docs:[
         {t:'📘 비즈니스 채널 신청 가이드',h:GITBOOK+'/channel/start'},
         {t:'📘 내 매장 관리 가이드',h:GITBOOK+'/channel/run/mystore'}
@@ -2565,20 +2794,40 @@
 
   // 이 페이지가 가진 정보로 답할 수 없는 질문은, 실제 웹 검색으로 넘겨준다.
   // (정적 페이지라 AI API를 호출할 수 없으므로, 추측해서 답하지 않고 실제 검색 결과로 연결한다)
-  function buildWebSearch(query, tone){
+  // seen(Set) 을 받으면 답변 위쪽에 이미 보여준 주소는 여기서 다시 노출하지 않는다.
+  // (같은 고객센터·가이드 링크가 화면에 세 번 나오는 것이 '정신없다'의 원인이었다)
+  function buildWebSearch(query, tone, seen){
+    const soft = tone === 'soft';
     const box = document.createElement('div');
-    box.className = 'web-fallback' + (tone === 'soft' ? ' soft' : '');
-    box.innerHTML = '<div class="web-fallback-label">' + (tone === 'soft'
-      ? '💬 찾으시던 답이 아니라면, 아래에서 직접 문의하거나 검색해보세요.'
+    box.className = 'web-fallback' + (soft ? ' soft' : '');
+    box.innerHTML = '<div class="web-fallback-label">' + (soft
+      ? '💬 찾으시던 답이 아니라면, 여기에서 직접 문의하거나 검색해보세요.'
       : '💬 커뮤니티 안내에 없는 내용이라 추측하지 않았어요. 아래에서 직접 문의하거나 검색해보실 수 있습니다.') + '</div>';
-    const row = document.createElement('div');
-    row.className = 'go-btns';
-    [
+    const links = [
       { t:'🏪 파트너센터 고객센터 열기', h:CSCENTER },
-      { t:'📘 카카오비즈니스 서비스 가이드(Gitbook)', h:GITBOOK },
+      { t:'📘 카카오비즈니스 서비스 가이드', h:GITBOOK },
       { t:'☕ 다음카페 Q&A에 질문 올리기', h:CAFE },
       { t:'🌐 웹에서 검색해보기', h:'https://www.google.com/search?q=' + encodeURIComponent('카카오비즈니스 ' + query) }
-    ].forEach((l, i) => {
+    ].filter(l => !(seen && seen.has(l.h)));
+    // 검색 링크는 질문마다 주소가 달라 중복될 일이 없으므로 항상 남는다.
+    if (soft) {
+      const row = document.createElement('div');
+      row.className = 'gen-more';
+      links.forEach(l => {
+        const a = document.createElement('a');
+        a.className = 'gen-link';
+        a.textContent = l.t;
+        a.href = l.h;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        row.appendChild(a);
+      });
+      box.appendChild(row);
+      return box;
+    }
+    const row = document.createElement('div');
+    row.className = 'go-btns';
+    links.forEach((l, i) => {
       const a = document.createElement('a');
       a.className = 'go-btn' + (i === 0 ? '' : ' outline');
       a.textContent = l.t;
@@ -2751,11 +3000,32 @@
     if (second) {
       const extra = document.createElement('div');
       extra.className = 'gen-extra';
-      extra.innerHTML = '<b>함께 알아두시면 좋아요 · </b>' + second.lead;
+      extra.innerHTML = '<b>함께 알아두시면 좋아요<br></b>' + second.lead;
       rest.appendChild(extra);
     }
 
-    const allLinks = best.links.concat(second ? second.links.slice(0, 1) : []);
+    // 링크 정리 규칙 (2026-09-28 개편)
+    // 말풍선 버튼이 스무 개씩 쌓여 정신없던 문제를 세 단계로 나눠 해결한다.
+    //  1) 바로 할 일 = 큰 버튼 최대 2개
+    //  2) 참고 자료(가이드·고객센터·카페) = 작은 글씨 링크 한 줄
+    //  3) 근거 FAQ = 접힌 상태의 토글
+    // seenLinks 로 같은 주소가 여러 단계에 다시 등장하지 않게 전역 중복을 막는다.
+    // 고객센터는 화면 우하단 떠 있는 버튼으로 항상 열 수 있으니 미리 등록해 둔다.
+    const seenLinks = new Set([CSCENTER]);
+    function takeNew(list){
+      const out = [];
+      (list || []).forEach(l => {
+        if (!l || !l.h || seenLinks.has(l.h)) return;
+        seenLinks.add(l.h);
+        out.push(l);
+      });
+      return out;
+    }
+
+    // 큰 버튼은 최대 2개까지만. 남는 링크는 버리지 않고 아래 '더 자세히' 줄로 내려보낸다.
+    const pickedLinks = takeNew(best.links.concat(second ? second.links.slice(0, 1) : []));
+    const allLinks = pickedLinks.slice(0, 2);
+    const spilled = pickedLinks.slice(2);
     if (allLinks.length) {
       const lw = document.createElement('div');
       lw.className = 'go-btns';
@@ -2770,50 +3040,53 @@
       rest.appendChild(lw);
     }
 
-    // 비슷한 질문에는 커뮤니티 안내와 함께, 근거가 된 카카오비즈니스 공식 Gitbook과
-    // 서비스 자체 문의를 위한 고객센터 링크도 함께 안내한다 (이미 위에 같은 링크가 있으면 중복 표시하지 않음).
     // 주제별로 확인된 공식 가이드 문서를 직접 연결한다. 주제에 맞는 문서가 없을 때만 가이드 첫 화면으로 보낸다.
+    // 버튼이 아니라 작은 글씨 링크 한 줄로 두어, 위의 '바로 할 일' 버튼과 시각적으로 구분한다.
     const topicDocs = (best.docs || []).concat(second && second.docs ? second.docs.slice(0, 1) : []);
-    const moreLinks = (topicDocs.length ? topicDocs : [{ t:'📘 카카오비즈니스 서비스 가이드', h: GITBOOK }])
-      .concat([{ t:'🏪 파트너센터 고객센터', h: CSCENTER }])
-      .filter((l, i, arr) => arr.findIndex(x => x.h === l.h) === i)
-      .filter(l => !allLinks.some(al => al.h === l.h));
+    const moreLinks = spilled.concat(takeNew(
+      (topicDocs.length ? topicDocs : [{ t:'📘 카카오비즈니스 서비스 가이드', h: GITBOOK }])
+        .concat([{ t:'☕ 다음카페 Q&A에 질문하기', h: CAFE }])
+    )).slice(0, 5);
     if (moreLinks.length) {
       const more = document.createElement('div');
       more.className = 'gen-more';
-      more.innerHTML = '🔗 더 자세한 내용이 필요하면 아래에서 확인해보세요.';
-      const moreRow = document.createElement('div');
-      moreRow.className = 'go-btns';
+      const lab = document.createElement('span');
+      lab.className = 'gen-more-label';
+      lab.textContent = '더 자세히';
+      more.appendChild(lab);
       moreLinks.forEach(l => {
         const a = document.createElement('a');
-        a.className = 'go-btn outline';
+        a.className = 'gen-link';
         a.textContent = l.t;
         a.href = l.h;
         a.target = '_blank';
         a.rel = 'noopener';
-        moreRow.appendChild(a);
+        more.appendChild(a);
       });
-      more.appendChild(moreRow);
       rest.appendChild(more);
     }
 
+    // 근거 FAQ는 기본으로 접어 둔다. 평소에는 한 줄, 필요할 때만 펼쳐서 원문으로 이동한다.
     const refIds = best.refs.concat(second ? second.refs : []).filter((v, i, arr) => arr.indexOf(v) === i);
-    const src = document.createElement('div');
-    src.className = 'gen-source';
-    src.innerHTML = '📄 이 답변은 아래 FAQ ' + refIds.length + '개의 내용을 종합해 정리했어요. 원문을 보시려면 눌러주세요.';
-    const chips = document.createElement('div');
-    chips.className = 'gen-source-chips';
-    refIds.forEach(id => {
-      const title = faqTitle(id);
-      if (!title) return;
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = title;
-      b.addEventListener('click', () => jumpToFaq(id));
-      chips.appendChild(b);
-    });
-    src.appendChild(chips);
-    rest.appendChild(src);
+    const usableRefs = refIds.filter(id => faqTitle(id));
+    if (usableRefs.length) {
+      const src = document.createElement('details');
+      src.className = 'gen-source';
+      const sum = document.createElement('summary');
+      sum.innerHTML = '📄 이 답변의 근거 FAQ ' + usableRefs.length + '개 보기';
+      src.appendChild(sum);
+      const chips = document.createElement('div');
+      chips.className = 'gen-source-chips';
+      usableRefs.forEach(id => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = faqTitle(id);
+        b.addEventListener('click', () => jumpToFaq(id));
+        chips.appendChild(b);
+      });
+      src.appendChild(chips);
+      rest.appendChild(src);
+    }
 
     // 주제는 맞췄지만 질문이 콕 집어 물은 세부 내용이 자료에 없을 때,
     // 또는 문제 상황인데 이 주제의 점검 목록이 아직 정리되지 않았을 때 → 직접 문의·검색 경로 안내
@@ -2821,7 +3094,7 @@
       ? !troubleItems.length
       : picked.via === 'default';
     if (showSearch) {
-      rest.appendChild(buildWebSearch(query, 'soft'));
+      rest.appendChild(buildWebSearch(query, 'soft', seenLinks));
     }
 
     smartAnswerCard.innerHTML = '';
@@ -2984,6 +3257,40 @@
       setTimeout(() => target.classList.remove('flash'), 1600);
     });
   });
+
+  /* ---- 모바일: 추천 질문 접기/펼치기 ----
+     질문 13개가 한 줄씩 쌓이면 휴대폰에서 검색창 아래가 전부 질문 목록이 된다.
+     CSS 가 좁은 화면에서만 7번째 이후를 숨기고(.collapsed), 여기서 그 상태를 토글한다.
+     버튼 자체가 좁은 화면에서만 보이므로 넓은 화면 동작에는 영향이 없다. */
+  (function(){
+    const list = document.getElementById('chatList');
+    const btn = document.getElementById('suggestMore');
+    if (!list || !btn) return;
+    const hiddenCount = Math.max(0, list.querySelectorAll('.chat-bubble').length - 6);
+    if (!hiddenCount) { btn.remove(); return; }
+    function sync(){
+      const folded = list.classList.contains('collapsed');
+      btn.textContent = folded ? '질문 ' + hiddenCount + '개 더 보기' : '질문 목록 접기';
+      btn.setAttribute('aria-expanded', folded ? 'false' : 'true');
+    }
+    sync();
+    btn.addEventListener('click', () => {
+      list.classList.toggle('collapsed');
+      sync();
+    });
+  })();
+
+  /* ---- 모바일: 검색창 안내문 줄이기 ----
+     예시를 세 개 넣은 안내문이 휴대폰에서는 끝이 잘려 읽히지 않았다. */
+  (function(){
+    const full = searchInput.getAttribute('placeholder');
+    const short = '궁금한 내용을 검색해보세요';
+    function sync(){
+      searchInput.setAttribute('placeholder', window.innerWidth <= 600 ? short : full);
+    }
+    sync();
+    window.addEventListener('resize', sync);
+  })();
 </script>
 
 </body>
