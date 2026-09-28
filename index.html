@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사장님 백과사전 | 사장님커뮤니티 5기</title>
 <!-- 카카오톡·카페에 링크를 공유했을 때 이름과 설명이 그대로 보이도록 -->
-<meta name="description" content="사장님커뮤니티 5기 전용 안내 페이지입니다. 필수 채널 가입, 사전준비, 발대식, 온라인 커리큘럼, 예약하기 입점까지 사장님들이 궁금해한 내용을 한 권에 모았습니다.">
+<meta name="description" content="사장님커뮤니티 5기 전용 안내 페이지입니다. 필수 채널 가입, 사전준비, 발대식, 온라인 커리큘럼, 예약하기 입점까지, 사장님들이 궁금해한 내용을 검색 한 번으로 찾을 수 있게 정리했습니다.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="사장님 백과사전 | 사장님커뮤니티 5기">
-<meta property="og:description" content="사전준비부터 예약하기 입점까지, 5기 사장님들이 궁금해한 내용을 한 권에 모았습니다.">
+<meta property="og:description" content="사전준비부터 예약하기 입점까지, 5기 사장님들이 궁금해한 내용을 검색 한 번으로 찾을 수 있게 정리했습니다.">
 <meta property="og:url" content="https://kayleek-hub.github.io/ceocommunity5/">
 <meta property="og:image" content="https://kayleek-hub.github.io/ceocommunity5/assets/hero-beauty-gift.png">
 <style>
@@ -143,25 +143,6 @@
     color:#6b5a68;
     margin:0;
   }
-  /* 사전답게 '무엇이 얼마나 담겨 있는지'를 한 줄로 보여준다 */
-  .hero-chips{
-    list-style:none;
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin:20px 0 0;
-    padding:0;
-  }
-  .hero-chips li{
-    font-size:13px;
-    font-weight:600;
-    color:#8A4463;
-    background:rgba(255,255,255,.62);
-    border:1px solid rgba(255,255,255,.9);
-    border-radius:10px;
-    padding:6px 12px;
-  }
-  .hero-chips b{color:#D42462;font-weight:800;}
   /* 좁은 화면에서는 좌우 배치를 위아래로 되돌린다 (글 먼저, 키비주얼 아래) */
   @media(max-width:880px){
     .hero-inner{
@@ -172,7 +153,6 @@
     }
     .hero-copy{max-width:600px;margin-inline:auto;}
     .hero h1{font-size:42px;}
-    .hero-chips{justify-content:center;}
     .hero .kv-wrap{max-width:520px;margin-inline:auto;}
     .hero::before{right:50%;transform:translateX(50%);}
   }
@@ -834,8 +814,6 @@
     .hero-copy{ max-width:none; }
     .hero h1{ font-size:31px; margin:0 0 9px; word-break:keep-all; }
     .hero .h1-mark::after{ height:.24em; }
-    .hero-chips{ gap:6px; margin-top:12px; }
-    .hero-chips li{ font-size:11.5px; padding:5px 9px; border-radius:8px; }
     .hero p{ font-size:14.5px; line-height:1.6; word-break:keep-all; }
     .hero::after{ height:56px; bottom:-28px; border-radius:50% 50% 0 0 / 28px 28px 0 0; }
 
@@ -903,7 +881,6 @@
   @media(max-width:400px){
     .hero h1{ font-size:27px; }
     .hero .kv-wrap{ max-width:288px; }
-    .hero-chips li:nth-child(3){ display:none; }
     .qa summary{ font-size:15px; }
     .chat-bubble{ font-size:13.5px; }
   }
@@ -920,12 +897,7 @@
       <h1><span class="h1-mark">사장님 백과사전</span></h1>
       <!-- 줄바꿈 : 쉼표 뒤에서 끊기도록 문장을 나누고, 끊기면 어색한 구절은
            줄바꿈 없는 공백(&nbsp;)으로 묶어 둔다. '5기 / 참여에' 처럼 갈리지 않게. -->
-      <p>필수&nbsp;채널 가입부터 사전준비, 발대식, 온라인&nbsp;커리큘럼, 예약하기&nbsp;입점까지,<br class="br-clause">5기 사장님들이 궁금해한 것들을 한 권에 모았습니다.</p>
-      <ul class="hero-chips">
-        <li><b>54</b>개 항목</li>
-        <li><b>29</b>개 주제 AI 답변</li>
-        <li>고객센터 원문 <b>연결</b></li>
-      </ul>
+      <p>필수&nbsp;채널 가입부터 사전준비, 발대식, 온라인&nbsp;커리큘럼, 예약하기&nbsp;입점까지,<br class="br-clause">5기 사장님들이 궁금해한 것들을 검색 한 번으로 찾을 수 있게 정리했습니다.</p>
     </div>
     <div class="kv-wrap">
       <img src="assets/hero-beauty-gift.png" alt="열린 선물 상자와 립스틱, 네일, 빗, 파우더 등 뷰티 소품이 떠 있는 사장님 커뮤니티 5기 뷰티 키비주얼">
