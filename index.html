@@ -64,6 +64,7 @@
     bottom:-40px;left:0;right:0;height:80px;
     background:var(--bg);
     border-radius:50% 50% 0 0 / 40px 40px 0 0;
+    pointer-events:none;      /* 장식이 검색창 클릭을 가로채지 않게 한다 */
   }
   .hero-inner{
     position:relative;
@@ -164,11 +165,16 @@
   .searchbox{
     margin:-30px auto 28px;
     position:relative;
+    z-index:3;                /* 히어로 위로 확실히 올려 클릭이 막히지 않게 한다 */
     max-width:760px;
+    padding:8px;              /* 입력창 주변 여백까지 클릭 영역으로 쓴다 */
+    cursor:text;
   }
   .searchbox input{
     width:100%;
-    padding:18px 22px 18px 50px;
+    box-sizing:border-box;
+    min-height:62px;
+    padding:20px 22px 20px 52px;
     border-radius:16px;
     border:1px solid var(--line);
     box-shadow:0 8px 24px rgba(0,0,0,.06);
@@ -178,7 +184,7 @@
   .searchbox input:focus{outline:2px solid var(--yellow);}
   .searchbox .search-icon{
     position:absolute;
-    left:20px;
+    left:28px;
     top:50%;
     transform:translateY(-50%);
     font-size:17px;
@@ -818,8 +824,8 @@
     .hero::after{ height:56px; bottom:-28px; border-radius:50% 50% 0 0 / 28px 28px 0 0; }
 
     .searchbox{ margin:-22px auto 22px; }
-    .searchbox input{ padding:15px 16px 15px 44px; font-size:16px; border-radius:14px; }
-    .searchbox .search-icon{ left:16px; font-size:16px; }
+    .searchbox input{ padding:17px 16px 17px 46px; min-height:56px; font-size:16px; border-radius:14px; }
+    .searchbox .search-icon{ left:24px; font-size:16px; }
     .search-result-count{ font-size:13px; margin-bottom:14px; }
 
     .suggest-wrap{ margin-bottom:24px; }
@@ -907,7 +913,7 @@
 
 <div class="wrap">
 
-  <div class="searchbox">
+  <div class="searchbox" id="searchBox">
     <span class="search-icon">🔍</span>
     <input id="searchInput" type="text" placeholder="백과사전에서 찾아보세요 (예: 비즈인증, 발대식, 다음카페)">
   </div>
@@ -1509,11 +1515,14 @@
         <summary><span><span class="q-mark">Q.</span>회차별로 어떤 서비스를 다루나요?</span><span class="chev">▾</span></summary>
         <div class="a">
           <ul>
-            <li>2회차(10/6) : 채널홈 · 쿠폰 · 소식</li>
-            <li>3회차(10/13) : 카나나 상담매니저 · 예약하기(비헤어샵/헤어샵)</li>
-            <li>4회차(10/20) : 채널메시지 · 채널홍보 · 친구만들기 · 통합QR</li>
-            <li>5회차(10/27) : 맵광고 · 우리채널알리기 · 우리매장알리기</li>
+            <li>1회차(9/29) = 1주차 : 오프라인 발대식</li>
+            <li>2회차(10/6) = 2주차 : 채널홈 · 쿠폰 · 소식</li>
+            <li>3회차(10/13) = 3주차 : 카나나 상담매니저 · 예약하기(비헤어샵/헤어샵)</li>
+            <li>4회차(10/20) = 4주차 : 채널메시지 · 채널홍보 · 친구만들기 · 통합QR</li>
+            <li>5회차(10/27) = 5주차 : 맵광고 · 우리채널알리기 · 우리매장알리기</li>
+            <li>6회차(11/3) = 6주차 : 오프라인 수료식</li>
           </ul>
+          <p>온라인 회차(2~5회차)는 매주 화요일 오후 2시부터 3시 30분까지 진행됩니다.</p>
           <div class="go-btns">
             <a class="go-btn" href="https://bizseminar.kakao.com/seminar/329" target="_blank" rel="noopener">🎥 5기 온라인 LIVE 교육 페이지 가기</a>
             <a class="go-btn" href="https://business.kakao.com" target="_blank">📍 카카오비즈니스 파트너센터 바로가기</a>
@@ -1890,6 +1899,16 @@
   const tabs = document.querySelectorAll('.nav-tabs button');
   const categories = document.querySelectorAll('.category');
   const searchInput = document.getElementById('searchInput');
+  // 입력창 주변(아이콘·여백)을 눌러도 바로 입력이 시작되도록 클릭 영역을 넓힌다
+  const searchBoxEl = document.getElementById('searchBox');
+  if (searchBoxEl) {
+    searchBoxEl.addEventListener('mousedown', e => {
+      if (e.target !== searchInput) { e.preventDefault(); searchInput.focus(); }
+    });
+    searchBoxEl.addEventListener('touchend', e => {
+      if (e.target !== searchInput) { searchInput.focus(); }
+    }, {passive:true});
+  }
   const resultCountEl = document.getElementById('searchResultCount');
   const smartAnswerEl = document.getElementById('smartAnswer');
   const smartAnswerCard = document.getElementById('smartAnswerCard');
@@ -2167,7 +2186,7 @@
       who:'온라인 회차에 참여하는 사장님',
       goal:'회차별 일정과 참여 방법 확인',
       ordered:false,
-      keys:['온라인','회차','커리큘럼','수업','강의','라이브','live','vod','다시보기','2회차','3회차','4회차','5회차'],
+      keys:['온라인','회차','커리큘럼','수업','강의','라이브','live','vod','다시보기','2회차','3회차','4회차','5회차','주차','1주차','2주차','3주차','4주차','5주차','6주차','주차별','회차별','매주 화요일','화요일','10/6','10/13','10/20','10/27'],
       lead:'온라인 회차는 10/6, 10/13, 10/20, 10/27 매주 화요일 오후 2시부터 3시 30분까지 진행됩니다. 기능 설정 방법은 VOD로 미리 학습하고, LIVE 세션에서는 업종별 활용 사례와 담당자 Q&A를 중심으로 다룹니다.',
       core:[
         '2회차 10/6 : 채널홈 · 쿠폰 · 소식',
@@ -2176,6 +2195,7 @@
         '5회차 10/27 : 맵광고 · 우리채널알리기 · 우리매장알리기'
       ],
       facts:[
+        {keys:['주차','1주차','2주차','3주차','4주차','5주차','6주차','주차별','회차별','전체 일정','언제','날짜','며칠','몇 시'],text:'주차 = 회차로 세어주세요. 1회차(1주차) 9/29 오프라인 발대식, 2회차(2주차) 10/6, 3회차(3주차) 10/13, 4회차(4주차) 10/20, 5회차(5주차) 10/27 — 온라인 회차는 모두 화요일 오후 2시~3시 30분, 6회차(6주차) 11/3 오프라인 수료식입니다. 회차별 주제는 아래 목록과 커리큘럼 상세 페이지에서 확인하실 수 있습니다.'},
         {keys:['못','어려','불참','놓치','다시보기','vod','대체','결석'],text:'실시간 참여가 어려우시면 다시보기(VOD)로 학습하실 수 있습니다. 다만 실무자에게 직접 질문할 수 있는 것은 실시간 세션만의 장점이라 가능하면 실시간 참여를 권장드립니다.'},
         {keys:['어떻게','방식','진행','어디서'],text:'진행 방식 : 기본 기능 설정은 사전 제작 VOD로, LIVE에서는 업종별 사례·AI 활용법·서비스 담당자와의 실무 Q&A 중심으로 진행됩니다.'},
         {keys:['어디서','링크','입장','접속','주소','들어','수강','신청'],text:'수강 위치 : 회차별 온라인 LIVE 교육은 카카오비즈니스 세미나 페이지(5기 전용)에서 진행됩니다.'}
