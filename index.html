@@ -793,6 +793,439 @@
     margin-top:9px;
   }
 
+  /* ===================== 상단 페이지 탭 (2026-10-01) =====================
+     한 파일 안에 '문의 가이드'(1페이지)와 '사장님 백과사전'(2페이지)을 담고
+     상단 탭으로 갈아탄다. 주소 끝에 #guide / #dict 가 붙어 공유도 된다.
+     ※ 아래쪽 FAQ 분류 탭(.nav-tabs)과 이름이 겹치지 않도록 .ptabs 로 따로 둔다.
+        (.nav-tabs 는 document.querySelectorAll('.nav-tabs button') 가 쓰고 있다)
+     ===================================================================== */
+  .ptabs-bar{
+    position:sticky;
+    top:0;
+    z-index:40;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:saturate(180%) blur(10px);
+    -webkit-backdrop-filter:saturate(180%) blur(10px);
+    border-bottom:1px solid #F3E4ED;
+  }
+  .ptabs{
+    max-width:720px;
+    margin:0 auto;
+    padding:9px 16px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  /* 탭은 '이름 + 한 줄 설명' 두 줄 구성이다. 처음 들어온 사장님이
+     이름만 보고 헷갈리지 않도록, 각 탭이 무엇을 하는 곳인지 아래 줄에 적는다. */
+  .ptabs button{
+    appearance:none;
+    -webkit-appearance:none;
+    border:1px solid #F3E4ED;
+    background:#fff;
+    color:#8A7382;
+    font-family:inherit;
+    letter-spacing:-.01em;
+    padding:9px 12px;
+    min-height:56px;
+    border-radius:18px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:2px;
+    line-height:1.3;
+    text-align:center;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .ptabs .ptab-name{ font-size:14.5px; font-weight:800; letter-spacing:-.015em; }
+  .ptabs .ptab-role{ font-size:11.5px; font-weight:600; opacity:.82; letter-spacing:-.01em; word-break:keep-all; }
+  .ptabs button:hover{ background:#FFF4F9; color:#D6428F; }
+  .ptabs button[aria-selected="true"]{
+    background:linear-gradient(135deg,#FF6FB1,#FF4E9E);
+    border-color:transparent;
+    color:#fff;
+    box-shadow:0 6px 16px rgba(214,66,143,.24);
+  }
+  .ptabs button[aria-selected="true"] .ptab-role{ opacity:.92; }
+  .ptab-panel[hidden]{ display:none; }
+
+  /* ===================== 1페이지 : 문의 가이드 =====================
+     원본 안내 HTML을 옮겨 오면서 모든 클래스에 g- 를 붙였다.
+     백과사전이 이미 .hero / .wrap / .badge / .step / footer 등을 쓰고 있어
+     접두어 없이 합치면 두 페이지가 서로의 스타일을 덮어쓴다.
+     ================================================================= */
+  #page-guide{
+    --g-pink-1:#FFEBF5;
+    --g-pink-2:#FFCBE6;
+    --g-pink-deep:#FF5CA8;
+    --g-pink-text:#D6428F;
+    --g-ink:#2A2330;
+    --g-ink-soft:#5B5260;
+    --g-line:#F3E4ED;
+    --g-yellow:#FFC93C;
+    /* 본문 배경이 백과사전(연노랑)과 달라서, 내용이 짧은 화면에서도
+       아래쪽에 다른 색이 비치지 않도록 화면 높이만큼 깔아 둔다 */
+    background:#FFF8FB;
+    min-height:100vh;
+  }
+  #page-guide, #page-guide p, #page-guide li{ color:var(--g-ink-soft); }
+  .g-wrap{ max-width:720px; margin:0 auto; padding:0 20px 80px; }
+
+  /* 히어로 — 2페이지(사장님 백과사전) .hero 와 같은 설계로 맞춘다.
+     같은 핑크 그라데이션, 같은 1180px 2단 구성(왼쪽 글 / 오른쪽 키비주얼),
+     같은 pill 아이브로우·큰 제목·흰 하이라이트·아래쪽 물결 마감.
+     클래스 이름만 g- 접두어를 유지해 백과사전 스타일과 충돌하지 않게 한다. */
+  .g-hero{
+    position:relative;
+    background:linear-gradient(180deg,#FFEBF5 0%,#FFE1F0 38%,#FFD4E9 72%,#FFCBE6 100%);
+    padding:0;
+    overflow:hidden;
+  }
+  .g-hero::before{
+    content:"";
+    position:absolute;
+    top:-160px; right:-80px;
+    width:820px; height:620px;
+    background:radial-gradient(ellipse at center, rgba(255,255,255,.8) 0%, rgba(255,255,255,0) 66%);
+    pointer-events:none;
+  }
+  /* 아래쪽 물결 — 백과사전과 같은 방식. 문의 가이드의 본문 배경색(#FFF8FB)으로 이어진다 */
+  .g-hero::after{
+    content:"";
+    position:absolute;
+    bottom:-40px; left:0; right:0; height:80px;
+    background:#FFF8FB;
+    border-radius:50% 50% 0 0 / 40px 40px 0 0;
+    pointer-events:none;
+  }
+  .g-hero-inner{
+    position:relative;
+    z-index:1;
+    max-width:1180px;
+    margin:0 auto;
+    padding:60px 40px 78px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);
+    align-items:center;
+    gap:40px;
+  }
+  .g-hero-copy{ max-width:520px; }
+  .g-badge{
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:13px; font-weight:800; letter-spacing:.08em;
+    color:#D42462;
+    background:rgba(255,255,255,.78);
+    box-shadow:0 1px 0 rgba(255,255,255,.9) inset, 0 2px 8px rgba(196,32,90,.08);
+    border-radius:999px;
+    padding:7px 15px;
+    margin-bottom:18px;
+  }
+  .g-badge-dot{
+    width:6px; height:6px; border-radius:50%;
+    background:#F5426F;
+    box-shadow:0 0 0 3px rgba(245,66,111,.2);
+  }
+  .g-hero h1{
+    font-size:58px;
+    line-height:1.14;
+    margin:0 0 14px;
+    font-weight:800;
+    color:#2B2130;
+    letter-spacing:-.03em;
+    text-wrap:balance;
+  }
+  .g-hero h1 .g-accent{ position:relative; display:inline-block; padding:0 2px; }
+  .g-hero h1 .g-accent::after{
+    content:"";
+    position:absolute;
+    left:-2px; right:-2px; bottom:.1em;
+    height:.26em;
+    background:linear-gradient(90deg, rgba(255,255,255,.95), rgba(255,255,255,.55));
+    border-radius:4px;
+    z-index:-1;
+  }
+  .g-lead{
+    font-size:17px;
+    color:#6b5a68;
+    margin:0;
+  }
+  /* 히어로 안의 두 갈래 안내 — '순서대로 보기' 와 '바로 검색하기' */
+  .g-hero-cta{ display:flex; flex-wrap:wrap; gap:10px; margin-top:24px; }
+  .g-hero-cta a, .g-hero-cta button{
+    appearance:none; -webkit-appearance:none;
+    font-family:inherit;
+    font-size:14.5px; font-weight:800; letter-spacing:-.01em;
+    border-radius:999px;
+    padding:13px 20px;
+    min-height:48px;
+    display:inline-flex; align-items:center; gap:7px;
+    cursor:pointer;
+    text-decoration:none;
+    border:1px solid transparent;
+    transition:background .15s ease, box-shadow .15s ease, color .15s ease;
+  }
+  .g-hero-cta .g-cta-main{
+    background:linear-gradient(135deg,#FF6FB1,#FF4E9E);
+    color:#fff;
+    box-shadow:0 8px 20px rgba(214,66,143,.26);
+  }
+  .g-hero-cta .g-cta-main:hover{ box-shadow:0 10px 24px rgba(214,66,143,.34); }
+  .g-hero-cta .g-cta-sub{
+    background:rgba(255,255,255,.9);
+    color:#C21A6E;
+    border-color:rgba(255,255,255,.9);
+    box-shadow:0 4px 14px rgba(196,32,90,.1);
+  }
+  .g-hero-cta .g-cta-sub:hover{ background:#fff; }
+  .g-hero .g-kv{ position:relative; margin:0; }
+  .g-hero .g-kv img{
+    display:block;
+    width:100%;
+    height:auto;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
+    -webkit-mask-composite:source-in;
+    mask-image:
+      linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 6%, #000 94%, transparent 100%);
+    mask-composite:intersect;
+  }
+  @media(max-width:880px){
+    .g-hero-inner{
+      grid-template-columns:1fr;
+      padding:34px 22px 60px;
+      gap:20px;
+      text-align:center;
+    }
+    .g-hero-copy{ max-width:600px; margin-inline:auto; }
+    .g-hero h1{ font-size:42px; }
+    .g-hero-cta{ justify-content:center; }
+    .g-hero .g-kv{ max-width:520px; margin-inline:auto; }
+    .g-hero::before{ right:50%; transform:translateX(50%); }
+  }
+
+  /* 인사말 */
+  .g-intro{
+    background:#fff;
+    border-radius:20px;
+    margin-top:22px;
+    position:relative;
+    z-index:3;
+    padding:24px 22px;
+    box-shadow:0 10px 30px rgba(214,66,143,.1);
+    font-size:15px;
+    line-height:1.72;
+  }
+  .g-intro b{ color:var(--g-ink); }
+  .g-intro p{ margin:0 0 12px; }
+  .g-intro p:last-of-type{ margin-bottom:0; }
+  .g-tip{
+    margin-top:14px;
+    background:#FFF4F9;
+    border:1px solid var(--g-line);
+    border-radius:12px;
+    padding:13px 15px;
+    font-size:14px;
+    color:#A33E73;
+    line-height:1.65;
+  }
+
+  /* STEP 카드 */
+  .g-steps{ margin-top:32px; display:flex; flex-direction:column; gap:16px; }
+  .g-step{
+    background:#fff;
+    border:1px solid var(--g-line);
+    border-radius:18px;
+    padding:22px 22px 20px;
+  }
+  .g-step-head{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .g-step-num{
+    flex:none;
+    width:32px; height:32px;
+    border-radius:50%;
+    background:var(--g-pink-deep);
+    color:#fff;
+    font-weight:800;
+    font-size:14.5px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .g-step-title{
+    font-size:17px; font-weight:800;
+    color:var(--g-ink);
+    letter-spacing:-.02em;
+    line-height:1.35;
+    text-wrap:balance;
+  }
+  .g-step-emoji{ font-size:18px; margin-right:4px; }
+  .g-step-body{ font-size:14.5px; line-height:1.72; }
+  .g-step-body p{ margin:0 0 10px; }
+  .g-step-body p:last-child{ margin-bottom:0; }
+
+  /* 링크 카드 — 모바일에서 손가락으로 누르기 쉽도록 높이를 넉넉히 둔다 */
+  .g-link{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px;
+    width:100%;
+    background:#FFF4F9;
+    border:1px solid var(--g-line);
+    border-radius:12px;
+    padding:13px 15px;
+    min-height:50px;
+    margin-top:8px;
+    text-align:left;
+    font-family:inherit;
+    text-decoration:none;
+    color:var(--g-pink-text);
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .g-link:hover{ background:#FFE7F2; }
+  .g-link:active{ transform:scale(.995); }
+  .g-link .g-arrow{ font-size:15px; flex:none; }
+  .g-link-sub{
+    font-weight:500;
+    color:var(--g-ink-soft);
+    font-size:13px;
+    display:block;
+    margin-top:3px;
+    line-height:1.55;
+  }
+  .g-link-stack{ display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+  .g-link-stack .g-link{ margin-top:0; }
+
+  .g-note{
+    margin-top:12px;
+    background:#FFF0E8;
+    border:1px solid #FFD9BE;
+    border-radius:12px;
+    padding:13px 15px;
+    font-size:13.5px;
+    color:#B5560C;
+    line-height:1.7;
+  }
+  .g-note b{ color:#95400A; }
+
+  .g-ch-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+  .g-ch-card{
+    background:#FFF4F9;
+    border:1px solid var(--g-line);
+    border-radius:12px;
+    padding:16px 13px;
+    text-align:center;
+  }
+  .g-ch-ic{ font-size:22px; display:block; margin-bottom:6px; }
+  .g-ch-name{ font-weight:800; font-size:14.5px; color:var(--g-ink); margin-bottom:6px; }
+  .g-ch-how{ font-size:12.5px; color:var(--g-ink-soft); margin-bottom:10px; line-height:1.6; }
+  .g-ch-card a{
+    display:inline-block;
+    font-size:13px;
+    color:var(--g-pink-text);
+    font-weight:800;
+    text-decoration:none;
+    border-bottom:1px solid var(--g-pink-2);
+    padding-bottom:1px;
+  }
+
+  .g-tagbox{
+    margin-top:14px;
+    background:linear-gradient(135deg,var(--g-pink-1),var(--g-pink-2));
+    border-radius:14px;
+    padding:16px;
+    text-align:center;
+  }
+  .g-tagbox .g-tag-label{ font-size:13px; color:#A33E73; margin-bottom:6px; font-weight:700; }
+  .g-tagbox .g-tag{ font-size:19px; font-weight:800; color:#C21A6E; letter-spacing:-.01em; }
+
+  .g-req{
+    margin:10px 0 0;
+    padding-left:0;
+    list-style:none;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .g-req li{
+    display:flex; gap:10px; align-items:flex-start;
+    font-size:14px;
+    background:#FFF4F9; border-radius:10px; padding:11px 13px;
+  }
+  .g-req .g-num{
+    flex:none;
+    width:22px; height:22px; border-radius:50%;
+    background:var(--g-yellow); color:#5a4000;
+    font-size:12px; font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+    margin-top:1px;
+  }
+
+  /* ---------- 한 번에 정리하면 (흐름 요약) ----------
+     원래는 .flow-arrow 가 text-align:center + padding-left:13px 였다.
+     화살표가 '줄 전체 폭'의 가운데에 놓여서 번호 동그라미와 어긋났다.
+     이제 번호 동그라미와 화살표가 똑같은 28px 칸을 쓰게 해서 한 줄로 세운다. */
+  .g-summary{
+    margin-top:34px;
+    background:linear-gradient(160deg,#2A2330,#3A2E3F);
+    border-radius:20px;
+    padding:26px 22px 24px;
+    color:#F7EEF4;
+  }
+  .g-summary h2{
+    font-size:18px; font-weight:800;
+    letter-spacing:-.02em;
+    margin:0 0 6px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .g-summary-sub{ font-size:13px; color:#B7A2B3; margin:0 0 16px; }
+  .g-flow{ display:flex; flex-direction:column; }
+  .g-flow-row{ display:flex; gap:12px; align-items:flex-start; padding:9px 0; }
+  .g-flow-num{
+    flex:none;
+    width:28px; height:28px; border-radius:50%;
+    background:var(--g-pink-deep);
+    color:#fff; font-size:12.5px; font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .g-flow-body{ flex:1 1 auto; min-width:0; padding-top:4px; }
+  .g-flow-text{ font-size:14px; color:#EFE2EA; letter-spacing:-.01em; line-height:1.55; }
+  .g-flow-text b{ color:#FFD1EA; }
+  .g-flow-sub{ font-size:12.5px; color:#C7AFC0; margin-top:4px; line-height:1.6; }
+  /* 화살표 칸의 폭(28px)은 번호 동그라미 폭과 같다 → 세로로 정확히 정렬된다 */
+  .g-flow-arrow{
+    width:28px;
+    text-align:center;
+    color:#8A7489;
+    font-size:13px;
+    line-height:1;
+    padding:1px 0;
+  }
+
+  /* 맺음말 */
+  .g-outro{
+    margin-top:32px;
+    background:#fff;
+    border:1px solid var(--g-line);
+    border-radius:18px;
+    padding:24px 22px;
+    text-align:center;
+    font-size:14px;
+    line-height:1.8;
+  }
+  .g-outro p{ margin:0 0 12px; }
+  .g-outro p:last-of-type{ margin-bottom:0; }
+  .g-sign{
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid var(--g-line);
+    font-size:13.5px;
+    font-weight:800;
+    color:#A33E73;
+    letter-spacing:-.01em;
+  }
+
   /* ===================== 모바일 최적화 (2026-09-28) =====================
      실제 휴대폰(약 412px) 화면에서 확인된 문제를 한 곳에 모아 고친다.
      이 블록은 스타일시트 맨 끝에 두어 위쪽 규칙을 확실히 덮어쓴다.
@@ -879,6 +1312,50 @@
     }
     .web-fallback{ padding:14px 15px; }
 
+    /* --- 1페이지(문의 가이드) 모바일 --- */
+    .ptabs{ padding:7px 10px; gap:6px; }
+    .ptabs button{ padding:8px 7px; min-height:52px; border-radius:16px; }
+    .ptabs .ptab-name{ font-size:13.5px; }
+    .ptabs .ptab-role{ font-size:11px; }
+
+    .g-wrap{ padding:0 14px 72px; }
+    .g-hero-copy{ max-width:none; }
+    .g-badge{ font-size:11.5px; padding:6px 12px; margin-bottom:12px; }
+    .g-hero h1{ font-size:31px; margin:0 0 9px; word-break:keep-all; }
+    .g-lead{ font-size:14.5px; line-height:1.6; word-break:keep-all; }
+    .g-hero::after{ height:56px; bottom:-28px; border-radius:50% 50% 0 0 / 28px 28px 0 0; }
+    .g-hero-cta{ gap:8px; margin-top:18px; }
+    .g-hero-cta a, .g-hero-cta button{ font-size:13.5px; padding:12px 16px; min-height:46px; width:100%; justify-content:center; }
+
+    .g-intro{ padding:20px 16px; margin-top:16px; font-size:14.5px; }
+    .g-tip{ padding:12px 13px; font-size:13.5px; }
+
+    .g-steps{ margin-top:26px; gap:14px; }
+    .g-step{ padding:18px 16px 16px; }
+    .g-step-head{ gap:10px; }
+    .g-step-num{ width:28px; height:28px; font-size:13.5px; }
+    .g-step-title{ font-size:15.5px; }
+    .g-step-emoji{ font-size:16.5px; }
+    .g-step-body{ font-size:14px; }
+
+    .g-link{ padding:13px 14px; font-size:13.5px; }
+    .g-link-sub{ font-size:12.5px; }
+
+    /* 모바일에서는 상담톡·PC 문의 카드를 한 줄씩 쌓는다 */
+    .g-ch-grid{ grid-template-columns:1fr; }
+    .g-tagbox .g-tag{ font-size:17.5px; }
+    .g-req li{ font-size:13.5px; }
+
+    .g-summary{ padding:22px 16px 20px; margin-top:28px; }
+    .g-summary h2{ font-size:16.5px; }
+    .g-flow-row{ gap:10px; }
+    .g-flow-num{ width:26px; height:26px; font-size:12px; }
+    .g-flow-arrow{ width:26px; }
+    .g-flow-text{ font-size:13.5px; }
+    .g-flow-sub{ font-size:12px; }
+
+    .g-outro{ padding:20px 16px; font-size:13.5px; margin-top:26px; }
+
     .cta-box{ margin-top:34px; padding:24px 18px; border-radius:16px; }
     .cta-box a{ display:block; }
     footer{ padding:24px 0 8px; }
@@ -887,6 +1364,10 @@
   @media(max-width:400px){
     .hero h1{ font-size:27px; }
     .hero .kv-wrap{ max-width:288px; }
+    .ptabs .ptab-name{ font-size:12.5px; }
+    .ptabs .ptab-role{ font-size:10.5px; }
+    .g-hero h1{ font-size:27px; }
+    .g-step-title{ font-size:15px; }
     .qa summary{ font-size:15px; }
     .chat-bubble{ font-size:13.5px; }
   }
@@ -894,7 +1375,229 @@
 </head>
 <body>
 
-<a class="cs-float" href="https://cs.kakao.com/helps?service=247&amp;locale=ko" target="_blank">💬 고객센터</a>
+<a class="cs-float" href="https://cs.kakao.com/helps?service=247&amp;locale=ko" target="_blank" rel="noopener">💬 고객센터</a>
+
+<div class="ptabs-bar">
+  <div class="ptabs" role="tablist" aria-label="페이지 선택">
+    <button type="button" id="ptab-guide" role="tab" aria-selected="true" aria-controls="page-guide" data-ptab="guide">
+      <span class="ptab-name">💬 문의 가이드</span>
+      <span class="ptab-role">어디에 물어볼지 순서대로</span>
+    </button>
+    <button type="button" id="ptab-dict" role="tab" aria-selected="false" aria-controls="page-dict" data-ptab="dict">
+      <span class="ptab-name">📖 사장님 백과사전</span>
+      <span class="ptab-role">궁금한 걸 검색해서 찾기</span>
+    </button>
+  </div>
+</div>
+
+<!-- ========== 1페이지 : 문의 가이드 ========== -->
+<div class="ptab-panel" id="page-guide" role="tabpanel" aria-labelledby="ptab-guide">
+
+  <div class="g-hero">
+    <div class="g-hero-inner">
+      <div class="g-hero-copy">
+        <div class="g-badge"><span class="g-badge-dot"></span>사장님커뮤니티 5기 전용</div>
+        <h1><span class="g-accent">문의 가이드</span></h1>
+        <p class="g-lead">카카오 비즈니스를 쓰다가 막히셨을 때, 어디에&nbsp;무엇을 물어보면 가장 빠른지<br class="br-clause">5단계로 정리해 두었습니다. 찾고 싶은 내용이 있으시면 <b>사장님&nbsp;백과사전</b>에서 검색해 보세요.</p>
+        <div class="g-hero-cta">
+          <a class="g-cta-main" href="#g-steps-top">💬 문의 순서 보기</a>
+          <button type="button" class="g-cta-sub" data-goto-dict>📖 사장님 백과사전에서 검색하기</button>
+        </div>
+      </div>
+      <div class="g-kv">
+        <img src="assets/hero-beauty-gift.png" alt="열린 선물 상자와 립스틱, 네일, 빗, 파우더 등 뷰티 소품이 떠 있는 사장님커뮤니티 5기 뷰티 키비주얼">
+      </div>
+    </div>
+  </div>
+
+  <div class="g-wrap">
+
+    <div class="g-intro">
+      <p>안녕하세요, <b>사장님커뮤니티 5기 운영진</b>입니다. 😊</p>
+      <p>5기 활동을 하시면서 카카오톡&nbsp;채널을 개설하거나 운영하다 보면 “이건 어떻게 설정하지?”, “채널 정보를 바꾸고 싶은데 어디서 하지?” 하고 막히는 순간이 생기실 텐데요. 그럴 때 혼자 헤매지 않으시도록, 어디에서 무엇을 확인하면 가장 빠른지 정리해두었습니다.</p>
+      <div class="g-tip">💡 급하게 카페에 질문을 남기기보다, 아래 순서대로 하나씩만 짚어보세요. 대부분 1~3단계에서 답이 나옵니다.</div>
+    </div>
+
+    <div class="g-steps" id="g-steps-top">
+
+      <!-- STEP 1 -->
+      <div class="g-step">
+        <div class="g-step-head">
+          <div class="g-step-num">1</div>
+          <div class="g-step-title"><span class="g-step-emoji">🎬</span>사전 설정 VOD에서 확인하기</div>
+        </div>
+        <div class="g-step-body">
+          <p>가장 먼저 사전&nbsp;설정&nbsp;VOD를 확인해 주세요. 카카오톡&nbsp;채널 개설과 기본 설정처럼 5기 활동에 꼭 필요한 내용은 이 영상에 모두 담겨 있습니다.</p>
+          <div class="g-link-stack">
+            <a class="g-link" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">
+              <span>🎬 사전 설정 VOD 바로 보기<span class="g-link-sub">채널 개설부터 기본 설정까지 11분</span></span>
+              <span class="g-arrow">→</span>
+            </a>
+            <a class="g-link" href="https://bizseminar.kakao.com/vod?keyword=39" target="_blank" rel="noopener">
+              <span>📚 사장님커뮤니티 5기 VOD 모음집<span class="g-link-sub">회차별 교육 영상을 한곳에서 찾아보실 수 있어요</span></span>
+              <span class="g-arrow">→</span>
+            </a>
+          </div>
+          <div class="g-note">세미나 사이트에 <b>로그인하지 않으면 1분 미리보기</b>만 재생됩니다. 먼저 로그인한 뒤 보시면 끝까지 시청하실 수 있어요.</div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="g-step">
+        <div class="g-step-head">
+          <div class="g-step-num">2</div>
+          <div class="g-step-title"><span class="g-step-emoji">📖</span>사장님 백과사전에서 찾아보기</div>
+        </div>
+        <div class="g-step-body">
+          <p>VOD에서 해결되지 않았다면 사장님&nbsp;백과사전을 검색해 보세요. 다른 사장님이 이미 물어보신 내용이라면, 따로 문의하지 않고도 바로 답을 보실 수 있습니다.</p>
+          <button type="button" class="g-link" data-goto-dict>
+            <span>🔍 사장님 백과사전에서 검색하기<span class="g-link-sub">누르면 바로 옆 탭으로 넘어가 검색창에 커서가 놓입니다</span></span>
+            <span class="g-arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="g-step">
+        <div class="g-step-head">
+          <div class="g-step-num">3</div>
+          <div class="g-step-title"><span class="g-step-emoji">🔎</span>카카오 공식 가이드·고객센터에서 찾아보기</div>
+        </div>
+        <div class="g-step-body">
+          <p>1~2단계에서 답을 찾지 못하셨다면 카카오 공식 가이드와 고객센터 도움말을 확인해 주세요. 채널 개설·설정·운영 방법이나 사업자정보 변경처럼 기능 이용 방법은 아래 페이지에 자세히 안내되어 있습니다.</p>
+
+          <div class="g-link-stack">
+            <a class="g-link" href="https://kakaobusiness.gitbook.io/main/channel/info" target="_blank" rel="noopener">
+              <span>📖 카카오비즈니스 가이드 &gt; 카카오톡 채널<span class="g-link-sub">채널 이용 방법이 궁금할 때</span></span>
+              <span class="g-arrow">→</span>
+            </a>
+            <a class="g-link" href="https://cs.kakao.com/helps?service=247" target="_blank" rel="noopener">
+              <span>🔎 카카오비즈니스 파트너센터 웹고객센터<span class="g-link-sub">자주 묻는 질문과 해결 방법을 찾고 싶을 때</span></span>
+              <span class="g-arrow">→</span>
+            </a>
+          </div>
+
+          <p style="margin-top:14px;">많이 찾으시는 두 가지는 아래에서 바로 열어보실 수 있어요.</p>
+          <div class="g-link-stack">
+            <a class="g-link" href="https://cs.kakao.com/search/service?serviceId=247&amp;categoryId=1157" target="_blank" rel="noopener">
+              <span>✔ 사업자정보 수정·변경</span>
+              <span class="g-arrow">→</span>
+            </a>
+            <a class="g-link" href="https://cs.kakao.com/search/service?serviceId=247&amp;categoryId=1150&amp;deviceId=4209" target="_blank" rel="noopener">
+              <span>✔ 채널 개설·설정</span>
+              <span class="g-arrow">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="g-step">
+        <div class="g-step-head">
+          <div class="g-step-num">4</div>
+          <div class="g-step-title"><span class="g-step-emoji">💬</span>해결되지 않았다면 고객센터에 문의하기</div>
+        </div>
+        <div class="g-step-body">
+          <p>공식 가이드와 도움말에서도 답이 없었다면 고객센터에 바로 문의해 주세요. 채널 즉시 삭제, 채널명 변경, 마스터 변경처럼 내 채널의 상태를 확인하고 조치해야 하는 일은 고객센터가 가장 빠릅니다.</p>
+
+          <div class="g-ch-grid">
+            <div class="g-ch-card">
+              <span class="g-ch-ic">📱</span>
+              <div class="g-ch-name">모바일 상담톡</div>
+              <div class="g-ch-how">아래 버튼을 누르면 카카오비즈니스 채널 상담톡이 바로 열립니다</div>
+              <a href="https://pf.kakao.com/_WekxcC/chat" target="_blank" rel="noopener">상담톡 열기 →</a>
+            </div>
+            <div class="g-ch-card">
+              <span class="g-ch-ic">💻</span>
+              <div class="g-ch-name">PC 웹 문의</div>
+              <div class="g-ch-how">아래 링크에서 문의 내용을 적어 접수해 주세요</div>
+              <a href="https://cs.kakao.com/requests?service=247" target="_blank" rel="noopener">바로가기 →</a>
+            </div>
+          </div>
+
+          <div class="g-tagbox">
+            <div class="g-tag-label">📌 5기 사장님이라면 이 한 줄을 꼭 남겨주세요</div>
+            <div class="g-tag">#사장님커뮤니티5기</div>
+          </div>
+          <div class="g-note"><b>필수 기재</b> — 모바일 상담톡이든 PC 웹 문의든, 문의 내용과 함께 위 문구를 적어주세요. 5기 사장님의 문의라는 걸 저희가 확인할 수 있어서 이후 챙겨드리기가 훨씬 쉬워집니다.</div>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="g-step">
+        <div class="g-step-head">
+          <div class="g-step-num">5</div>
+          <div class="g-step-title"><span class="g-step-emoji">🙌</span>그래도 안 되면 운영진에게 알려주세요</div>
+        </div>
+        <div class="g-step-body">
+          <p>같은 문제로 여러 번 문의했는데도 해결되지 않거나, 받은 답변이 충분하지 않으셨다면 저희가 이어서 확인하겠습니다.</p>
+          <p>카페에 글을 남기실 때 아래 네 가지만 함께 적어주시면, 저희가 지금까지의 상황을 한 번에 파악할 수 있습니다.</p>
+          <ol class="g-req">
+            <li><span class="g-num">1</span>어떤 문제가 생겼는지</li>
+            <li><span class="g-num">2</span>고객센터에 문의한 내용</li>
+            <li><span class="g-num">3</span>고객센터에서 받은 답변</li>
+            <li><span class="g-num">4</span>문의·답변 화면 캡처</li>
+          </ol>
+          <p style="margin-top:12px;">내용을 확인한 뒤, 추가 확인이 필요한 건은 담당 부서와 함께 끝까지 챙기겠습니다. 🙌</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 전체 흐름 요약 -->
+    <div class="g-summary">
+      <h2>💡 한 번에 정리하면</h2>
+      <p class="g-summary-sub">위에서 아래로, 이 순서대로만 따라가시면 됩니다.</p>
+      <div class="g-flow">
+        <div class="g-flow-row">
+          <div class="g-flow-num">1</div>
+          <div class="g-flow-body"><div class="g-flow-text">사전 설정 VOD 확인하기</div></div>
+        </div>
+        <div class="g-flow-arrow" aria-hidden="true">↓</div>
+        <div class="g-flow-row">
+          <div class="g-flow-num">2</div>
+          <div class="g-flow-body"><div class="g-flow-text">사장님 백과사전에서 검색하기</div></div>
+        </div>
+        <div class="g-flow-arrow" aria-hidden="true">↓</div>
+        <div class="g-flow-row">
+          <div class="g-flow-num">3</div>
+          <div class="g-flow-body"><div class="g-flow-text">카카오 공식 가이드·고객센터 도움말 확인하기</div></div>
+        </div>
+        <div class="g-flow-arrow" aria-hidden="true">↓</div>
+        <div class="g-flow-row">
+          <div class="g-flow-num">4</div>
+          <div class="g-flow-body">
+            <div class="g-flow-text">해결되지 않으면 고객센터에 문의하기</div>
+            <div class="g-flow-sub">📱 모바일은 상담톡, 💻 PC는 웹 문의</div>
+            <div class="g-flow-sub">👉 문의할 때 <b>#사장님커뮤니티5기</b> 꼭 적어주세요</div>
+          </div>
+        </div>
+        <div class="g-flow-arrow" aria-hidden="true">↓</div>
+        <div class="g-flow-row">
+          <div class="g-flow-num">5</div>
+          <div class="g-flow-body"><div class="g-flow-text">그래도 안 되면 문의·답변 캡처와 함께 카페에 남기기</div></div>
+        </div>
+        <div class="g-flow-arrow" aria-hidden="true">↓</div>
+        <div class="g-flow-row">
+          <div class="g-flow-num">6</div>
+          <div class="g-flow-body"><div class="g-flow-text">운영진 확인 후, 필요한 건은 담당 부서와 함께 팔로업</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="g-outro">
+      <p>조금 번거롭게 느껴질 수도 있지만, 사장님의 문의를<br class="br-clause">더 빠르고 정확하게 해결하기 위한 순서입니다. 😊</p>
+      <p>이렇게 모인 질문과 해결 방법을 차곡차곡 쌓아,<br class="br-clause">다른 사장님들도 필요할 때 바로 답을 찾으실 수 있게 만들어 가겠습니다.</p>
+      <p>늘 감사합니다.</p>
+      <div class="g-sign">사장님커뮤니티 5기 운영진 드림</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== 2페이지 : 사장님 백과사전 ========== -->
+<div class="ptab-panel" id="page-dict" role="tabpanel" aria-labelledby="ptab-dict" hidden>
+
 
 <div class="hero">
   <div class="hero-inner">
@@ -903,7 +1606,7 @@
       <h1><span class="h1-mark">사장님 백과사전</span></h1>
       <!-- 줄바꿈 : 쉼표 뒤에서 끊기도록 문장을 나누고, 끊기면 어색한 구절은
            줄바꿈 없는 공백(&nbsp;)으로 묶어 둔다. '5기 / 참여에' 처럼 갈리지 않게. -->
-      <p>필수&nbsp;채널 가입부터 사전준비, 발대식, 온라인&nbsp;커리큘럼, 예약하기&nbsp;입점까지,<br class="br-clause">5기 사장님들이 궁금해한 것들을 검색 한 번으로 찾을 수 있게 정리했습니다.</p>
+      <p>필수&nbsp;채널 가입부터 사전준비, 발대식, 온라인&nbsp;커리큘럼, 예약하기&nbsp;입점까지,<br class="br-clause">5기 사장님들이 궁금해하셨던 것들을 모아 두었습니다. 검색 한 번으로 찾아보세요.</p>
     </div>
     <div class="kv-wrap">
       <img src="assets/hero-beauty-gift.png" alt="열린 선물 상자와 립스틱, 네일, 빗, 파우더 등 뷰티 소품이 떠 있는 사장님 커뮤니티 5기 뷰티 키비주얼">
@@ -915,13 +1618,13 @@
 
   <div class="searchbox" id="searchBox">
     <span class="search-icon">🔍</span>
-    <input id="searchInput" type="text" placeholder="백과사전에서 찾아보세요 (예: 비즈인증, 발대식, 다음카페)">
+    <input id="searchInput" type="text" placeholder="궁금한 것을 적어보세요 (예: 비즈인증, 발대식, 다음카페)">
   </div>
   <div class="search-result-count" id="searchResultCount"></div>
 
   <div class="smart-answer" id="smartAnswer">
     <div class="smart-answer-badge">🤖 AI 추천 답변</div>
-    <div class="smart-answer-note" id="smartAnswerNote">백과사전에 담긴 안내 내용을 모아서 질문에 맞게 정리해드렸어요.</div>
+    <div class="smart-answer-note" id="smartAnswerNote">백과사전에 담긴 안내를 모아 질문에 맞게 정리해드렸어요.</div>
     <div class="smart-answer-card" id="smartAnswerCard"></div>
     <div class="smart-related-wrap" id="smartRelatedWrap">
       <div class="smart-related-label">🔎 이런 질문도 함께 확인해보세요</div>
@@ -1024,8 +1727,8 @@
           </ul>
           <p class="note">※ 가입 신청 후 <b>커뮤니티 매니저가 확인하여 24시간 이내에 승인</b>해드립니다. 바로 승인되지 않아도 조금만 기다려주세요.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://kko.to/lq29GNKt7z" target="_blank">☕ 다음카페 가입하기 (초대 링크)</a>
-            <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank">☕ 사장님커뮤니티 5기 카페 바로가기</a>
+            <a class="go-btn" href="https://kko.to/lq29GNKt7z" target="_blank" rel="noopener">☕ 다음카페 가입하기 (초대 링크)</a>
+            <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank" rel="noopener">☕ 사장님커뮤니티 5기 카페 바로가기</a>
           </div>
         </div>
       </details>
@@ -1044,7 +1747,7 @@
           </ul>
           <p>닉네임을 수정하신 뒤 <b>다시 가입 신청</b>해주시면 확인 후 승인해드립니다. 승인은 커뮤니티 매니저 확인 후 <b>24시간 이내</b>에 처리됩니다.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://kko.to/lq29GNKt7z" target="_blank">☕ 다음카페 다시 가입 신청하기</a>
+            <a class="go-btn" href="https://kko.to/lq29GNKt7z" target="_blank" rel="noopener">☕ 다음카페 다시 가입 신청하기</a>
           </div>
         </div>
       </details>
@@ -1058,8 +1761,8 @@
             <li>프로필명 : 다음카페와 동일하게 <b>실명/업장명/지역구</b> 형식으로 설정 (예: 홍길동/카카오살롱/마포구)</li>
           </ul>
           <div class="go-btns">
-            <a class="go-btn" href="https://open.kakao.com/o/gV0yFAJi" target="_blank">📢 공지방 오픈채팅 입장하기</a>
-            <a class="go-btn" href="https://open.kakao.com/o/gj52ZSJi" target="_blank">💬 대화방 오픈채팅 입장하기</a>
+            <a class="go-btn" href="https://open.kakao.com/o/gV0yFAJi" target="_blank" rel="noopener">📢 공지방 오픈채팅 입장하기</a>
+            <a class="go-btn" href="https://open.kakao.com/o/gj52ZSJi" target="_blank" rel="noopener">💬 대화방 오픈채팅 입장하기</a>
           </div>
         </div>
       </details>
@@ -1076,7 +1779,7 @@
         <div class="a">
           <p>참여코드(kakao5)와 링크를 다시 확인해주시고, 그래도 입장이 되지 않는다면 <b>다음카페 Q&amp;A 게시판</b>에 글을 남겨주세요. 담당자가 확인 후 빠르게 도와드립니다.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank">☕ 다음카페 Q&amp;A로 문의하기</a>
+            <a class="go-btn" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank" rel="noopener">☕ 다음카페 Q&amp;A로 문의하기</a>
           </div>
         </div>
       </details>
@@ -1104,12 +1807,13 @@
           </ul>
           <p>여기에 커뮤니티 소통 채널인 <b>다음카페와 오픈채팅방(공지방·대화방)</b> 가입까지 마쳐주시면 사전준비 완료입니다.</p>
           <p>위 단계는 <b>「사전 튜토리얼 영상」(1강 · 총 11분)</b> 으로도 안내드립니다. 카카오 비즈 세미나 사이트의 VOD 교육 페이지에서 보실 수 있고, <b>로그인하지 않으면 1분 미리보기만 재생</b>되니 세미나 사이트에 로그인한 뒤 시청해주세요.</p>
-          <p class="note">※ 2주차 이후의 실습 튜토리얼 영상은 공개되는 대로 이 페이지와 공지방에 링크를 올려두겠습니다.</p>
+          <p class="note">※ 회차별 교육 영상은 <b>5기 VOD 모음집</b>에 공개되는 대로 쌓입니다. 새 영상이 올라오면 공지방에도 함께 알려드리겠습니다.</p>
           <div class="go-btns">
             <a class="go-btn" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 사전 튜토리얼 영상 보기 (11분)</a>
-            <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 카카오비즈니스에서 사전준비 시작하기</a>
-            <a class="go-btn outline" href="https://bizseminar.kakao.com/support" target="_blank">🎁 웰컴프로그램 신청하기</a>
-            <a class="go-btn outline" href="https://kko.to/lq29GNKt7z" target="_blank">☕ 다음카페 가입하기 (초대 링크)</a>
+            <a class="go-btn outline" href="https://bizseminar.kakao.com/vod?keyword=39" target="_blank" rel="noopener">📚 5기 VOD 모음집 보기</a>
+            <a class="go-btn" href="https://business.kakao.com" target="_blank" rel="noopener">🏪 카카오비즈니스에서 사전준비 시작하기</a>
+            <a class="go-btn outline" href="https://bizseminar.kakao.com/support" target="_blank" rel="noopener">🎁 웰컴프로그램 신청하기</a>
+            <a class="go-btn outline" href="https://kko.to/lq29GNKt7z" target="_blank" rel="noopener">☕ 다음카페 가입하기 (초대 링크)</a>
           </div>
         </div>
       </details>
@@ -1141,7 +1845,7 @@
           <p class="note">※ 비즈니스 채널 신청은 <b>채널 마스터만</b> 할 수 있습니다. 매니저는 진행 여부만 조회할 수 있으니, 기존 채널로 신청하신다면 마스터 권한을 먼저 확인해주세요.</p>
           <p class="note">※ 운영 관리는 <b>모바일 앱</b>으로도 편리하게 하실 수 있습니다. 플레이스토어·앱스토어에서 <b>‘카카오비즈니스 파트너센터’</b>를 검색해 미리 설치·로그인해두세요.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 카카오비즈니스에서 신청하기</a>
+            <a class="go-btn" href="https://business.kakao.com" target="_blank" rel="noopener">🏪 카카오비즈니스에서 신청하기</a>
             <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 사전 설정 튜토리얼 영상으로 따라하기</a>
           </div>
         </div>
@@ -1179,7 +1883,7 @@
             <li>전환이 완료된 뒤에도 <b>파트너센터에서 사업자정보를 변경하면 재심사가 필요</b>합니다.</li>
           </ul>
           <div class="go-btns">
-            <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 파트너센터에서 심사 현황 확인하기</a>
+            <a class="go-btn" href="https://business.kakao.com" target="_blank" rel="noopener">🏪 파트너센터에서 심사 현황 확인하기</a>
             <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 심사 신청 과정 영상으로 확인하기</a>
           </div>
         </div>
@@ -1203,8 +1907,8 @@
           <p class="note">※ 재심사도 <b>영업일 기준 3~5일 정도</b> 걸립니다. 제출한 서류는 <b>30일이 지나면 파기</b>될 수 있어, 시간이 오래 지난 뒤 재신청하실 때는 서류를 다시 업로드해야 할 수 있습니다.</p>
           <p class="note">※ 반려 사유 문구가 애매해서 무엇을 고쳐야 할지 모르겠다면, <b>사유 화면을 캡처해 다음카페 Q&amp;A 게시판</b>에 올려주세요. 담당자가 어디를 고쳐야 하는지 짚어드립니다. 발대식 현장 <b>CS테이블</b>에서도 바로 도와드립니다.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 파트너센터에서 사유 확인 후 재심사</a>
-            <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank">☕ 다음카페에 반려 사유 문의하기</a>
+            <a class="go-btn" href="https://business.kakao.com" target="_blank" rel="noopener">🏪 파트너센터에서 사유 확인 후 재심사</a>
+            <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank" rel="noopener">☕ 다음카페에 반려 사유 문의하기</a>
             <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 서류 제출 화면 영상으로 다시 보기</a>
           </div>
         </div>
@@ -1225,8 +1929,8 @@
           </ul>
           <p class="note">※ 매장 정보는 승인 이후에도 파트너센터 <b>‘내 매장’</b>에서 수정할 수 있지만, <b>주소나 카테고리를 바꾸면 다시 심사</b>가 진행되고 <b>진행 중이던 우리매장 맵광고는 자동 중단</b>(잔여 금액 환급)됩니다. 광고 실습 중에는 매장 정보를 바꾸지 않으시는 편이 좋습니다.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 파트너센터에서 매장정보 수정하기</a>
-            <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank">☕ 다음카페에 매장 심사 문의하기</a>
+            <a class="go-btn" href="https://business.kakao.com" target="_blank" rel="noopener">🏪 파트너센터에서 매장정보 수정하기</a>
+            <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank" rel="noopener">☕ 다음카페에 매장 심사 문의하기</a>
             <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 매장 등록 화면 영상으로 다시 보기</a>
           </div>
         </div>
@@ -1246,7 +1950,7 @@
           <p class="note">※ 제출 서류는 <b>30일 후 파기</b>될 수 있어, 한참 뒤에 재신청하실 때는 서류를 다시 올려야 할 수 있습니다.</p>
           <p class="note">※ <b>사전준비 기간이 짧기 때문에</b>, 반려를 두 번 이상 받으셨다면 혼자 고치려 하지 말고 <b>다음카페 Q&amp;A에 사유 캡처와 함께</b> 올려주세요. 발대식 전에 통과되도록 담당자가 함께 봐드립니다. 발대식 당일 <b>CS테이블</b>에서 노트북을 켜고 바로 해결하실 수도 있습니다.</p>
           <div class="go-btns">
-            <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank">☕ 다음카페 Q&amp;A에 사유 캡처와 함께 문의</a>
+            <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank" rel="noopener">☕ 다음카페 Q&amp;A에 사유 캡처와 함께 문의</a>
           </div>
         </div>
       </details>
@@ -1269,7 +1973,7 @@
           <p class="note">※ 비즈월렛을 만든 뒤 <b>1년간 사용 이력이 없으면 자동으로 삭제</b>될 수 있습니다. 미리 만들어두셨다면 광고 실습 전에 살아 있는지 한 번 확인해주세요.</p>
           <p class="note">※ 채널의 비즈월렛 생성·연결은 <b>채널 마스터만</b> 가능합니다. 비즈월렛을 삭제하면 남아 있던 무상캐시는 함께 소멸되고 환불되지 않습니다.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://business.kakao.com" target="_blank">💳 파트너센터에서 비즈월렛 연결하기</a>
+            <a class="go-btn" href="https://business.kakao.com" target="_blank" rel="noopener">💳 파트너센터에서 비즈월렛 연결하기</a>
             <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 비즈월렛 생성·연결 영상으로 따라하기</a>
           </div>
         </div>
@@ -1293,7 +1997,7 @@
           <p class="note">※ 지원금은 <b>9월 30일과 10월 8일에 지급 예정</b>이고, 그 이후 신청은 <b>영업일 기준 15일 이내</b>에 검토 후 순차 지급됩니다. <b>가급적 10월 6일까지</b> 신청을 서둘러주세요.</p>
           <p>신청 후 정보 수정이나 취소는 우측 상단 내 이름 → <b>‘내 지원현황’ → ‘신청 상세내역보기’</b>에서 하실 수 있습니다. 신청 방법은 신청 페이지 안의 <b>📹 가이드 영상</b>으로도 확인하실 수 있습니다.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://bizseminar.kakao.com/support" target="_blank">🎁 웰컴프로그램 신청하기</a>
+            <a class="go-btn" href="https://bizseminar.kakao.com/support" target="_blank" rel="noopener">🎁 웰컴프로그램 신청하기</a>
             <a class="go-btn outline" href="https://kko.to/F5ffMufaqa" target="_blank" rel="noopener">📄 웰컴프로그램 신청 가이드</a>
             <a class="go-btn outline" href="https://bizseminar.kakao.com/vod/284?vodId=1007" target="_blank" rel="noopener">▶️ 신청 과정 영상으로 따라하기</a>
             <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5/Md20/10" target="_blank" rel="noopener">☕ 다음카페 공지 원문 보기</a>
@@ -1334,7 +2038,7 @@
           </ul>
           <p class="note">※ 지급 후에는 금액·대상 변경이 불가하니, 신청할 비즈월렛 ID가 실습에 쓸 채널과 연결된 것인지 신청 전에 꼭 확인해주세요.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://bizseminar.kakao.com/support" target="_blank">🎁 내 지원현황 확인하기</a>
+            <a class="go-btn" href="https://bizseminar.kakao.com/support" target="_blank" rel="noopener">🎁 내 지원현황 확인하기</a>
             <a class="go-btn outline" href="https://cafe.daum.net/kakaoceocommunity5/Md20/10" target="_blank" rel="noopener">☕ 다음카페 공지 원문 보기</a>
           </div>
         </div>
@@ -1456,7 +2160,7 @@
             <li>김승호 사장님(4기 수상자)의 강연과 대학내일 최현정 파트장의 숏폼 강의가 준비되어 있습니다.</li>
           </ul>
           <div class="go-btns">
-            <a class="go-btn" href="https://forms.gle/SR53gzahJNGxvLSs5" target="_blank">📝 발대식 참석 신청서 제출하기</a>
+            <a class="go-btn" href="https://forms.gle/SR53gzahJNGxvLSs5" target="_blank" rel="noopener">📝 발대식 참석 신청서 제출하기</a>
           </div>
           <p class="note">※ 신청 폼은 합격자 전원이 참석 여부와 관계없이 반드시 제출해주셔야 합니다.</p>
         </div>
@@ -1476,7 +2180,7 @@
         <div class="a">
           <p>무료 셔틀버스가 운행됩니다. <b>강남역 5번 출구</b> 또는 <b>판교역</b> 인근에서 탑승할 수 있으며, 정확한 탑승 정류장은 발대식 참석 신청 폼에서 선택하실 수 있습니다.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://forms.gle/SR53gzahJNGxvLSs5" target="_blank">📝 신청 폼에서 셔틀 정류장 선택하기</a>
+            <a class="go-btn" href="https://forms.gle/SR53gzahJNGxvLSs5" target="_blank" rel="noopener">📝 신청 폼에서 셔틀 정류장 선택하기</a>
           </div>
         </div>
       </details>
@@ -1504,9 +2208,10 @@
         <summary><span><span class="q-mark">Q.</span>온라인 회차는 어떤 방식으로 진행되나요?</span><span class="chev">▾</span></summary>
         <div class="a">
           <p>기본적인 기능 설정 방법은 VOD(사전 제작 영상)로 미리 학습하실 수 있고, 실시간 LIVE 세션에서는 업종별 활용 사례, AI 활용법, 서비스 담당자와의 실무 Q&amp;A를 중심으로 진행됩니다. 궁금한 점을 실시간으로 바로 질문하실 수 있습니다.</p>
-          <p>온라인 LIVE 교육은 <b>카카오비즈니스 세미나 페이지</b>에서 진행됩니다. 아래 버튼으로 5기 세미나 페이지에 들어가시면 회차별 교육을 수강하실 수 있습니다.</p>
+          <p>온라인 LIVE 교육은 <b>카카오비즈니스 세미나 페이지</b>에서 진행됩니다. 아래 버튼으로 5기 세미나 페이지에 들어가시면 회차별 교육을 수강하실 수 있고, 사전 제작 VOD는 <b>5기 VOD 모음집</b>에 모아두었습니다.</p>
           <div class="go-btns">
             <a class="go-btn" href="https://bizseminar.kakao.com/seminar/329" target="_blank" rel="noopener">🎥 5기 온라인 LIVE 교육 페이지 가기</a>
+            <a class="go-btn outline" href="https://bizseminar.kakao.com/vod?keyword=39" target="_blank" rel="noopener">📚 5기 VOD 모음집 보기</a>
           </div>
         </div>
       </details>
@@ -1525,9 +2230,9 @@
           <p>온라인 회차(2~5회차)는 매주 화요일 오후 2시부터 3시 30분까지 진행됩니다.</p>
           <div class="go-btns">
             <a class="go-btn" href="https://bizseminar.kakao.com/seminar/329" target="_blank" rel="noopener">🎥 5기 온라인 LIVE 교육 페이지 가기</a>
-            <a class="go-btn" href="https://business.kakao.com" target="_blank">📍 카카오비즈니스 파트너센터 바로가기</a>
-            <a class="go-btn" href="https://business.kakao.com/info/mychannelad/" target="_blank">📣 우리채널알리기 안내 보기</a>
-            <a class="go-btn" href="https://business.kakao.com/info/mystoread/" target="_blank">🏬 우리매장알리기 안내 보기</a>
+            <a class="go-btn" href="https://business.kakao.com" target="_blank" rel="noopener">📍 카카오비즈니스 파트너센터 바로가기</a>
+            <a class="go-btn" href="https://business.kakao.com/info/mychannelad/" target="_blank" rel="noopener">📣 우리채널알리기 안내 보기</a>
+            <a class="go-btn" href="https://business.kakao.com/info/mystoread/" target="_blank" rel="noopener">🏬 우리매장알리기 안내 보기</a>
           </div>
         </div>
       </details>
@@ -1544,7 +2249,7 @@
         <div class="a">
           <p>맵광고는 5회차(10/27) 온라인 세션에서 신청 방법과 세팅 방법을 자세히 안내드립니다. 채널·매장 연결과 비즈인증이 먼저 완료되어 있어야 신청이 가능하니, 사전준비 항목을 미리 확인해주세요.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://business.kakao.com" target="_blank">📍 카카오비즈니스 파트너센터 바로가기</a>
+            <a class="go-btn" href="https://business.kakao.com" target="_blank" rel="noopener">📍 카카오비즈니스 파트너센터 바로가기</a>
           </div>
         </div>
       </details>
@@ -1605,9 +2310,10 @@
         <summary><span><span class="q-mark">Q.</span>실시간 참여가 어려우면 어떻게 하나요?</span><span class="chev">▾</span></summary>
         <div class="a">
           <p>실시간 참여가 어려우신 경우 다시보기(VOD)로 학습하실 수 있도록 준비하고 있습니다. 다만 실무자에게 직접 질문할 수 있는 것은 실시간 세션만의 장점이니, 가능하시면 실시간 참여를 권장드립니다.</p>
-          <p>실시간 세션과 다시보기 모두 아래 5기 세미나 페이지에서 확인하실 수 있습니다.</p>
+          <p>실시간 세션은 아래 5기 세미나 페이지에서, 지금까지 공개된 교육 영상은 <b>5기 VOD 모음집</b>에서 한곳에 모아 보실 수 있습니다.</p>
           <div class="go-btns">
             <a class="go-btn" href="https://bizseminar.kakao.com/seminar/329" target="_blank" rel="noopener">🎥 5기 온라인 LIVE 교육 페이지 가기</a>
+            <a class="go-btn outline" href="https://bizseminar.kakao.com/vod?keyword=39" target="_blank" rel="noopener">📚 5기 VOD 모음집 보기</a>
           </div>
         </div>
       </details>
@@ -1815,8 +2521,8 @@
             <li><b>헤어샵 외 뷰티업종</b>(에스테틱, 피부관리, 네일, 속눈썹, 메이크업, 왁싱, 가발 등) : 카카오비즈니스 파트너센터에서 바로 입점하실 수 있습니다.</li>
           </ul>
           <div class="go-btns">
-            <a class="go-btn" href="https://partners.mamedene.com/" target="_blank">💇 마메드네 파트너스에서 입점하기(헤어샵)</a>
-            <a class="go-btn" href="https://business.kakao.com" target="_blank">🏪 카카오비즈니스 파트너센터에서 입점하기(헤어샵 외)</a>
+            <a class="go-btn" href="https://partners.mamedene.com/" target="_blank" rel="noopener">💇 마메드네 파트너스에서 입점하기(헤어샵)</a>
+            <a class="go-btn" href="https://business.kakao.com" target="_blank" rel="noopener">🏪 카카오비즈니스 파트너센터에서 입점하기(헤어샵 외)</a>
           </div>
         </div>
       </details>
@@ -1867,9 +2573,9 @@
           <p>사장님커뮤니티 5기의 공식 문의 채널은 <b>다음카페 Q&amp;A 게시판</b>입니다. 오픈채팅방(공지방·대화방)에서도 실시간으로 편하게 질문하실 수 있고, 발대식 현장에서는 CS테이블을 통해 직접 문의하실 수 있습니다. 온라인 회차 진행 중에는 채팅으로 실시간 질문도 가능합니다.</p>
           <p>채널·매장 연결, 비즈인증 등 카카오비즈니스 서비스 자체에 대한 문의는 아래에서 바로 확인하실 수 있습니다.</p>
           <div class="go-btns">
-            <a class="go-btn" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank">☕ 다음카페 Q&amp;A로 문의하기</a>
-            <a class="go-btn outline" href="https://open.kakao.com/o/gj52ZSJi" target="_blank">💬 오픈채팅 대화방으로 문의하기</a>
-            <a class="go-btn outline" href="https://cs.kakao.com/helps?service=247&amp;locale=ko" target="_blank">🏪 카카오비즈니스 파트너센터 고객센터</a>
+            <a class="go-btn" href="https://cafe.daum.net/kakaoceocommunity5" target="_blank" rel="noopener">☕ 다음카페 Q&amp;A로 문의하기</a>
+            <a class="go-btn outline" href="https://open.kakao.com/o/gj52ZSJi" target="_blank" rel="noopener">💬 오픈채팅 대화방으로 문의하기</a>
+            <a class="go-btn outline" href="https://cs.kakao.com/helps?service=247&amp;locale=ko" target="_blank" rel="noopener">🏪 카카오비즈니스 파트너센터 고객센터</a>
           </div>
         </div>
       </details>
@@ -1878,14 +2584,15 @@
   </div>
 
   <div class="cta-box">
-    <h3>백과사전에서 궁금증이 풀리지 않으셨나요?</h3>
-    <p>커리큘럼&nbsp;상세 페이지와 다음카페 Q&amp;A&nbsp;게시판에서<br class="br-clause">더 자세한 내용을 확인하실 수 있습니다.</p>
+    <h3>여기서 답을 찾지 못하셨나요?</h3>
+    <p>커리큘럼&nbsp;상세 페이지와 다음카페 Q&amp;A&nbsp;게시판에 더 자세한 내용이 있어요.<br class="br-clause">그래도 해결되지 않으면 ‘문의 가이드’ 탭의 순서대로 알려주세요. 끝까지 챙기겠습니다.</p>
     <a href="curriculum.html">커리큘럼 페이지 보기</a>
   </div>
 
   <footer>
     <div class="foot-title">사장님 백과사전 &nbsp;|&nbsp; 사장님커뮤니티 5기</div>
     <div class="foot-links">
+      <a href="#guide">문의 가이드</a>
       <a href="curriculum.html">전체 커리큘럼</a>
       <a href="results4.html">4기 성과 보고서</a>
       <a href="https://cafe.daum.net/kakaoceocommunity5" target="_blank" rel="noopener">다음카페</a>
@@ -1894,6 +2601,7 @@
   </footer>
 
 </div>
+</div><!-- /#page-dict -->
 
 <script>
   const tabs = document.querySelectorAll('.nav-tabs button');
@@ -1992,6 +2700,8 @@
   // ------------------------------------------------------------------
   const CAFE = 'https://cafe.daum.net/kakaoceocommunity5';
   const CHAT = 'https://open.kakao.com/o/gj52ZSJi';
+  // 카카오비즈니스 고객센터 모바일 상담톡 (바로 대화창이 열리는 /chat 주소)
+  const CSCHAT = 'https://pf.kakao.com/_WekxcC/chat';
   const BIZ = 'https://business.kakao.com';
   const CSCENTER = 'https://cs.kakao.com/helps?service=247&locale=ko';
   const GITBOOK = 'https://kakaobusiness.gitbook.io/main';
@@ -2003,6 +2713,8 @@
   // 0주차 사전 설정 튜토리얼 VOD (채널 생성·비즈인증 심사·매장 심사·비즈월렛·웰컴프로그램 신청 전 과정)
   // 채널 인증/심사, 매장 심사, 웰컴프로그램 신청 문의에 함께 안내한다. 2주차 이후 실습 VOD 는 링크가 나오면 추가.
   const VOD0 = 'https://bizseminar.kakao.com/vod/284?vodId=1007';
+  // 사장님커뮤니티 5기 VOD 모음집 (회차별 교육 영상 목록)
+  const VODALL = 'https://bizseminar.kakao.com/vod?keyword=39';
   // 5기 회차별 온라인 LIVE 교육이 열리는 세미나 페이지
   const LIVE = 'https://bizseminar.kakao.com/seminar/329';
 
@@ -2186,7 +2898,7 @@
       who:'온라인 회차에 참여하는 사장님',
       goal:'회차별 일정과 참여 방법 확인',
       ordered:false,
-      keys:['온라인','회차','커리큘럼','수업','강의','라이브','live','vod','다시보기','2회차','3회차','4회차','5회차','주차','1주차','2주차','3주차','4주차','5주차','6주차','주차별','회차별','매주 화요일','화요일','10/6','10/13','10/20','10/27'],
+      keys:['온라인','회차','커리큘럼','수업','강의','라이브','live','vod','다시보기','2회차','3회차','4회차','5회차','주차','1주차','2주차','3주차','4주차','5주차','6주차','주차별','회차별','매주 화요일','화요일','10/6','10/13','10/20','10/27','모음','모음집','영상','교육 영상'],
       lead:'온라인 회차는 10/6, 10/13, 10/20, 10/27 매주 화요일 오후 2시부터 3시 30분까지 진행됩니다. 기능 설정 방법은 VOD로 미리 학습하고, LIVE 세션에서는 업종별 활용 사례와 담당자 Q&A를 중심으로 다룹니다.',
       core:[
         '2회차 10/6 : 채널홈 · 쿠폰 · 소식',
@@ -2200,7 +2912,7 @@
         {keys:['어떻게','방식','진행','어디서'],text:'진행 방식 : 기본 기능 설정은 사전 제작 VOD로, LIVE에서는 업종별 사례·AI 활용법·서비스 담당자와의 실무 Q&A 중심으로 진행됩니다.'},
         {keys:['어디서','링크','입장','접속','주소','들어','수강','신청'],text:'수강 위치 : 회차별 온라인 LIVE 교육은 카카오비즈니스 세미나 페이지(5기 전용)에서 진행됩니다.'}
       ],
-      links:[{t:'🎥 5기 온라인 LIVE 교육 페이지 가기',h:LIVE},{t:'📚 커리큘럼 상세 페이지 보기',h:'curriculum.html'}],
+      links:[{t:'🎥 5기 온라인 LIVE 교육 페이지 가기',h:LIVE},{t:'📚 5기 VOD 모음집 보기',h:VODALL},{t:'📚 커리큘럼 상세 페이지 보기',h:'curriculum.html'}],
       docs:[
         {t:'📘 채널 운영하기 가이드(채널홈·소식·쿠폰·메시지)',h:GITBOOK+'/channel/run'}
       ],
@@ -2855,9 +3567,9 @@
       ],
       facts:[
         {keys:['심사','서류','비즈니스 채널','반려','계정','서비스','직접','접수'],text:'카카오 서비스 자체에 대한 문의(심사 진행 상황, 서류 재제출, 계정·권한 등)는 고객센터의 ‘웹 문의하기’로 접수하시면 담당 부서에서 확인합니다. 해외(미국) 사업자 비즈니스 채널 전환은 문의 카테고리에서 ‘비즈니스 채널 → 해외 비즈니스 채널 전환’을 선택해주세요.'},
-        {keys:['상담톡','카카오톡으로 문의','톡으로','전화'],text:'카카오톡으로 상담을 원하시면 카카오톡 검색창에 ‘카카오비즈니스’를 입력해 ‘카카오톡 채널’ 결과에서 채널을 찾아 상담톡으로 문의하실 수 있습니다. 글로 남기실 내용은 고객센터 문의하기가 기록이 남아 더 편합니다.'}
+        {keys:['상담톡','카카오톡으로 문의','톡으로','전화'],text:'카카오톡으로 상담을 원하시면 아래 ‘카카오비즈니스 상담톡’ 링크로 바로 들어가실 수 있습니다. 글로 남기실 내용은 고객센터 문의하기가 기록이 남아 더 편합니다.'}
       ],
-      links:[{t:'☕ 다음카페 Q&A로 문의하기',h:CAFE},{t:'💬 오픈채팅 대화방으로 문의하기',h:CHAT},{t:'🏪 파트너센터 고객센터',h:'https://cs.kakao.com/helps?service=247&locale=ko'},{t:'✉️ 고객센터에 문의 접수하기',h:'https://cs.kakao.com/requests?service=247'}],
+      links:[{t:'☕ 다음카페 Q&A로 문의하기',h:CAFE},{t:'💬 오픈채팅 대화방으로 문의하기',h:CHAT},{t:'🏪 파트너센터 고객센터',h:'https://cs.kakao.com/helps?service=247&locale=ko'},{t:'📱 카카오비즈니스 상담톡 열기',h:CSCHAT},{t:'✉️ 고객센터에 문의 접수하기',h:'https://cs.kakao.com/requests?service=247'}],
       refs:['faq-contact']
     }
   ];
@@ -3200,7 +3912,7 @@
         a.className = 'go-btn' + (idx === 0 ? '' : ' outline');
         a.textContent = l.t;
         a.href = l.h;
-        if (l.h.indexOf('http') === 0) a.target = '_blank';
+        if (l.h.indexOf('http') === 0) { a.target = '_blank'; a.rel = 'noopener'; }
         lw.appendChild(a);
       });
       rest.appendChild(lw);
@@ -3456,6 +4168,72 @@
     }
     sync();
     window.addEventListener('resize', sync);
+  })();
+
+  /* ===================== 상단 페이지 탭 (2026-10-01) =====================
+     '문의 가이드'(1페이지)와 '사장님 백과사전'(2페이지)을 갈아탄다.
+     - 처음 열면 문의 가이드가 보인다.
+     - 주소 끝에 #guide / #dict 가 붙어서 링크로 공유해도 그 페이지가 열린다.
+     - 가이드 STEP 2의 버튼을 누르면 백과사전 탭으로 넘어가 검색창에 커서를 둔다.
+     ===================================================================== */
+  (function(){
+    const ptabs = document.querySelectorAll('.ptabs button');
+    const panels = {
+      guide: document.getElementById('page-guide'),
+      dict:  document.getElementById('page-dict')
+    };
+    if (!ptabs.length || !panels.guide || !panels.dict) return;
+
+    function showPage(name, opts){
+      if (name !== 'guide' && name !== 'dict') name = 'guide';
+      ptabs.forEach(function(b){
+        b.setAttribute('aria-selected', b.dataset.ptab === name ? 'true' : 'false');
+      });
+      Object.keys(panels).forEach(function(k){
+        if (k === name) panels[k].removeAttribute('hidden');
+        else panels[k].setAttribute('hidden', '');
+      });
+      if (opts && opts.hash !== false) {
+        const h = '#' + name;
+        if (location.hash !== h) history.replaceState(null, '', h);
+      }
+      if (opts && opts.scrollTop !== false) window.scrollTo(0, 0);
+      if (opts && opts.focusSearch) {
+        const input = document.getElementById('searchInput');
+        if (input) {
+          // 모바일에서 주소창이 접히는 중에 포커스를 주면 위치가 튀어서 한 틱 기다린다
+          setTimeout(function(){ input.focus({ preventScroll:true }); }, 60);
+        }
+      }
+    }
+
+    ptabs.forEach(function(b){
+      b.addEventListener('click', function(){ showPage(b.dataset.ptab, {}); });
+    });
+
+    // 가이드 STEP 2 → 백과사전 탭으로 이동 + 검색창 포커스
+    document.querySelectorAll('[data-goto-dict]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        showPage('dict', { focusSearch:true });
+      });
+    });
+
+    window.addEventListener('hashchange', function(){
+      const h = (location.hash || '').replace('#','');
+      if (h === 'guide' || h === 'dict') showPage(h, { hash:false });
+    });
+
+    // 첫 진입 : #dict 로 들어온 경우만 백과사전, 그 밖에는 문의 가이드부터
+    const initial = (location.hash || '').replace('#','');
+    if (initial === 'dict') showPage('dict', { hash:false, scrollTop:false });
+    else if (initial === 'guide') showPage('guide', { hash:false, scrollTop:false });
+    else showPage('guide', { hash:false, scrollTop:false });
+
+    // 백과사전 안의 특정 답변으로 바로 가는 링크(#faq-...)가 눌렸을 때를 대비
+    document.addEventListener('click', function(e){
+      const a = e.target.closest ? e.target.closest('a[href^="#faq-"]') : null;
+      if (a && panels.dict.hasAttribute('hidden')) showPage('dict', { scrollTop:false });
+    });
   })();
 </script>
 
